@@ -10,11 +10,11 @@ function App() {
       <h1>deckonomicon</h1>
       <div className="card">
         <button onClick={() => setCount((count) => count + 1)}>
-          count is {count}
+          Load a deck
         </button>
-        <p>
-          Edit <code>src/App.tsx</code> and save to test HMR
-        </p>
+        <button onClick={() => setCount((count) => count + 1)}>
+          Download a deck
+        </button>
       </div>
       <PWABadge />
     </>
