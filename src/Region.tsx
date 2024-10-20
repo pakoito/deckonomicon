@@ -1,5 +1,5 @@
 import { CSSProperties, useCallback, useRef, useState } from "react";
-import { CardState, RegionId } from "./logic/api";
+import { RegionId } from "./logic/api";
 import { StateT } from "./State";
 import { Card } from "./Card";
 
