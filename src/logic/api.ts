@@ -102,7 +102,7 @@ export const flipCard = (
   flip: "toggle" | Facing
 ) => {
   const newGame = structuredClone(state);
-  const card = newGame.cards[cardId];
+  const card = newGame.cards[cardId]!;
   if (flip === "toggle") {
     if (card.facing === "up") {
       card.facing = "down";
@@ -112,5 +112,15 @@ export const flipCard = (
   } else {
     card.facing = flip;
   }
+  return newGame;
+};
+
+export const flipRegion = (state: Game, regionId: RegionId, flip: Facing) => {
+  const newGame = structuredClone(state);
+  const originRegion = newGame.regions[regionId]!;
+  originRegion.deck.forEach((cardId) => {
+    const card = newGame.cards[cardId]!;
+    card.facing = flip;
+  });
   return newGame;
 };
