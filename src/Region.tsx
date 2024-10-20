@@ -1,6 +1,7 @@
 import { CSSProperties, useCallback, useRef, useState } from "react";
 import { CardState, RegionId } from "./logic/api";
 import { StateT } from "./State";
+import { Card } from "./Card";
 
 type Props = {
   state: StateT;
@@ -67,27 +68,6 @@ const Region = (props: Props) => {
     setIsHovered(false);
   }, []);
 
-  function makeCard(topCard: CardState) {
-    const face =
-      topCard.facing === "front" ? topCard.card.front : topCard.card.back;
-    switch (face.ctype) {
-      case "text":
-        return <div>{face.text}</div>;
-      case "image-local":
-        return <img alt={topCard.card.hover} src={face.blob}></img>;
-      case "image-remote":
-        return (
-          <img
-            style={innerRectangleStyle}
-            alt={topCard.card.hover}
-            src={face.url}
-          ></img>
-        );
-      default:
-        return <div>Unknown card type: {face}</div>;
-    }
-  }
-
   return (
     <div
       style={{
@@ -117,7 +97,10 @@ const Region = (props: Props) => {
       >
         {region.region.label}
       </div>
-      <div style={innerRectangleStyle}>{topCard && makeCard(topCard)}</div>
+
+      <div style={innerRectangleStyle}>
+        {topCard && <Card cardState={topCard} />}
+      </div>
     </div>
   );
 };
