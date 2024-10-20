@@ -12,9 +12,29 @@ type Card = {
     | { ctype: "text"; text: string };
 };
 
-type Facing = "up" | "down";
+type Facing = "front" | "back";
 
-type RegionConfig = { facing: Facing };
+type Angle = "up" | "right" | "down" | "left";
+
+type Direction = "clockwise" | "counterclickwise";
+
+const turnAngle = (angle: Angle, direction: Direction): Angle => {
+  const clock = direction === "clockwise";
+  switch (angle) {
+    case "up":
+      return clock ? "right" : "left";
+    case "right":
+      return clock ? "down" : "up";
+    case "down":
+      return clock ? "left" : "right";
+    case "left":
+      return clock ? "up" : "down";
+    default:
+      return angle;
+  }
+};
+
+type RegionConfig = { facing: Facing; angle: Angle };
 
 type RegionId = string;
 
@@ -33,6 +53,7 @@ type RegionState = {
 type CardState = {
   card: Card;
   facing: Facing;
+  angle: Angle;
 };
 
 export type Game = {
@@ -40,7 +61,7 @@ export type Game = {
   cards: Record<CardId, CardState>;
 };
 
-export const newGame = (state: Game) => {
+export const newGame = (state: Game): Game => {
   const newGame = structuredClone(state);
   return newGame;
 };
@@ -53,7 +74,7 @@ export const moveByTop = (
     amount: 1,
     facing: null,
   }
-) => {
+): Game => {
   const newGame = structuredClone(state);
   const originRegion = newGame.regions[originRegionId]!;
   const targetRegion = newGame.regions[targetRegionId]!;
@@ -75,7 +96,7 @@ export const moveById = (
   options: { facing: Facing | null } = {
     facing: null,
   }
-) => {
+): Game => {
   const newGame = structuredClone(state);
   const originRegion = newGame.regions[originRegionId]!;
   const targetRegion = newGame.regions[targetRegionId]!;
@@ -89,7 +110,7 @@ export const moveById = (
   return newGame;
 };
 
-export const shuffleRegion = (state: Game, originRegionId: RegionId) => {
+export const shuffleRegion = (state: Game, originRegionId: RegionId): Game => {
   const newGame = structuredClone(state);
   const originRegion = newGame.regions[originRegionId]!;
   shuffleArray(originRegion.deck);
@@ -100,14 +121,14 @@ export const flipCard = (
   state: Game,
   cardId: CardId,
   flip: "toggle" | Facing
-) => {
+): Game => {
   const newGame = structuredClone(state);
   const card = newGame.cards[cardId]!;
   if (flip === "toggle") {
-    if (card.facing === "up") {
-      card.facing = "down";
+    if (card.facing === "front") {
+      card.facing = "back";
     } else {
-      card.facing = "up";
+      card.facing = "front";
     }
   } else {
     card.facing = flip;
@@ -115,12 +136,27 @@ export const flipCard = (
   return newGame;
 };
 
-export const flipRegion = (state: Game, regionId: RegionId, flip: Facing) => {
+export const flipRegion = (
+  state: Game,
+  regionId: RegionId,
+  flip: Facing
+): Game => {
   const newGame = structuredClone(state);
   const originRegion = newGame.regions[regionId]!;
   originRegion.deck.forEach((cardId) => {
     const card = newGame.cards[cardId]!;
     card.facing = flip;
   });
+  return newGame;
+};
+
+export const turnCard = (
+  state: Game,
+  cardId: CardId,
+  direction: Direction
+): Game => {
+  const newGame = structuredClone(state);
+  const card = newGame.cards[cardId]!;
+  card.angle = turnAngle(card.angle, direction);
   return newGame;
 };
