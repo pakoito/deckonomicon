@@ -1,4 +1,4 @@
-import { CSSProperties, useState } from "react";
+import { CSSProperties, useCallback, useRef, useState } from "react";
 import { CardState, RegionId } from "./logic/api";
 import { StateT } from "./State";
 
@@ -7,6 +7,7 @@ type Props = {
   regionId: RegionId;
   onClick: () => void;
   onDoubleClick: () => void;
+  onLongPress: () => void;
 };
 
 const Region = (props: Props) => {
@@ -43,6 +44,29 @@ const Region = (props: Props) => {
     transition: "opacity 0.3s ease",
   };
 
+  const longPressTimer = useRef<NodeJS.Timeout | null>(null);
+  const longPressDuration = 500; // milliseconds
+
+  const longPress = props.onLongPress;
+  const handleMouseDown = useCallback(() => {
+    longPressTimer.current = setTimeout(() => {
+      longPress();
+    }, longPressDuration);
+  }, [longPress]);
+
+  const handleMouseUp = useCallback(() => {
+    if (longPressTimer.current) {
+      clearTimeout(longPressTimer.current);
+    }
+  }, []);
+
+  const handleMouseLeave = useCallback(() => {
+    if (longPressTimer.current) {
+      clearTimeout(longPressTimer.current);
+    }
+    setIsHovered(false);
+  }, []);
+
   function makeCard(topCard: CardState) {
     const face =
       topCard.facing === "front" ? topCard.card.front : topCard.card.back;
@@ -71,9 +95,11 @@ const Region = (props: Props) => {
         position: "relative",
       }}
       onMouseEnter={() => setIsHovered(true)}
-      onMouseLeave={() => setIsHovered(false)}
+      onMouseLeave={handleMouseLeave}
       onClick={props.onClick}
       onDoubleClick={props.onDoubleClick}
+      onMouseDown={handleMouseDown}
+      onMouseUp={handleMouseUp}
     >
       <div
         style={{
