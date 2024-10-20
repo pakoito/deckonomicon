@@ -15,7 +15,6 @@ export const Card = (props: Props) => {
     cardState.facing === "front" ? cardState.card.front : cardState.card.back;
   const tooltipProps = {
     label: cardState.card.label,
-    openDelay: 1500,
   };
   switch (face.ctype) {
     case "text":
