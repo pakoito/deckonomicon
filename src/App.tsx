@@ -38,7 +38,14 @@ function App() {
   return (
     <>
       <h1>deckonomicon</h1>
-      <div className="card">
+      <div
+        className="card"
+        style={{
+          display: "flex",
+          flexDirection: "row",
+          gap: "10px",
+        }}
+      >
         {safeEntries(state.regions).map(([regionId]) => (
           <Region
             key={regionId}
