@@ -7,10 +7,10 @@ import {
   FileTypeValidator,
   FileSizeValidator,
 } from "use-file-picker/validators";
-import Region from "./Region.tsx";
+import Region, { CardCallbacks, RegionCallbacks } from "./Region.tsx";
 import { StateContext, StateT } from "./State.ts";
 import { safeEntries } from "./logic/utils.ts";
-import { flipTopRegion } from "./logic/api.ts";
+import { flipCard, shuffleRegion } from "./logic/api.ts";
 
 function App() {
   const stateC: StateT = useContext(StateContext);
@@ -46,16 +46,39 @@ function App() {
           gap: "10px",
         }}
       >
-        {safeEntries(state.regions).map(([regionId]) => (
-          <Region
-            key={regionId}
-            state={state}
-            onDoubleClick={() => {
-              setState((s) => flipTopRegion(s, regionId, "toggle"));
-            }}
-            regionId={regionId}
-          ></Region>
-        ))}
+        {safeEntries(state.regions).map(([regionId]) => {
+          const cardCallbacks: CardCallbacks = {
+            draw: ["Draw", () => {}],
+            play: ["Play", () => {}],
+            discard: ["Discard", () => {}],
+            destroy: ["Destroy", () => {}],
+            flip: [
+              "Flip",
+              (cardId) =>
+                setState((prevState) => flipCard(prevState, cardId, "toggle")),
+            ],
+            turn: ["Turn", () => {}],
+          };
+
+          const regionCallbacks: RegionCallbacks = {
+            shuffle: [
+              "Shuffle",
+              (regionId) =>
+                setState((prevState) => shuffleRegion(prevState, regionId)),
+            ],
+            search: ["Search", () => {}],
+          };
+
+          return (
+            <Region
+              key={regionId}
+              state={state}
+              regionId={regionId}
+              cardCallbacks={cardCallbacks}
+              regionCallbacks={regionCallbacks}
+            ></Region>
+          );
+        })}
       </div>
       <div className="card">
         <input type="url" onChange={(e) => setImageUrl(e.target.value)} />
