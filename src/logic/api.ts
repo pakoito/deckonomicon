@@ -1,22 +1,25 @@
 import { shuffleArray } from "./utils";
 
-type CardId = string;
+export type CardId = string;
 
-type Card = {
+export type Face =
+  | { ctype: "image-remote"; url: string }
+  | { ctype: "image-local"; blob: string }
+  | { ctype: "text"; text: string };
+
+export type Card = {
   id: CardId;
   label: string;
   hover: string;
-  content:
-    | { ctype: "image-net"; url: string }
-    | { ctype: "image-local"; blob: string }
-    | { ctype: "text"; text: string };
+  front: Face;
+  back: Face;
 };
 
-type Facing = "front" | "back";
+export type Facing = "front" | "back";
 
-type Angle = "up" | "right" | "down" | "left";
+export type Angle = "up" | "right" | "down" | "left";
 
-type Direction = "clockwise" | "counterclickwise";
+export type Direction = "clockwise" | "counterclickwise";
 
 const turnAngle = (angle: Angle, direction: Direction): Angle => {
   const clock = direction === "clockwise";
@@ -34,23 +37,23 @@ const turnAngle = (angle: Angle, direction: Direction): Angle => {
   }
 };
 
-type RegionConfig = { facing: Facing; angle: Angle };
+export type RegionConfig = { facing: Facing; angle: Angle };
 
-type RegionId = string;
+export type RegionId = string;
 
-type Region = {
+export type Region = {
   id: RegionId;
   label: string;
   hover: string;
   config: RegionConfig;
 };
 
-type RegionState = {
+export type RegionState = {
   region: Region;
   deck: CardId[];
 };
 
-type CardState = {
+export type CardState = {
   card: Card;
   facing: Facing;
   angle: Angle;
@@ -136,6 +139,16 @@ export const flipCard = (
     card.facing = flip;
   }
   return newGame;
+};
+
+export const flipTopRegion = (
+  state: Game,
+  regionId: RegionId,
+  flip: "toggle" | Facing
+): Game => {
+  const originRegion = state.regions[regionId]!;
+  if (originRegion.deck.length === 0) return state;
+  return flipCard(state, originRegion.deck[originRegion.deck.length - 1], flip);
 };
 
 export const flipRegion = (

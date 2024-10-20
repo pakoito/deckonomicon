@@ -1,4 +1,4 @@
-import { createContext, useContext, useState } from "react";
+import { useContext, useState } from "react";
 import PWABadge from "./PWABadge.tsx";
 import "./App.css";
 import { useFilePicker } from "use-file-picker";
@@ -7,35 +7,14 @@ import {
   FileTypeValidator,
   FileSizeValidator,
 } from "use-file-picker/validators";
-
-type Card = {
-  content:
-    | { ctype: "image-net"; url: string }
-    | { ctype: "image-local"; blob: string }
-    | { ctype: "text"; text: string };
-};
-
-const Regions = {
-  deck: {},
-};
-
-type RegionsT = typeof Regions;
-
-type CardStateT = {
-  card: Card;
-  region: keyof RegionsT;
-};
-
-const State = {
-  cards: [] as CardStateT[],
-};
-
-type StateT = typeof State;
-
-const StateContext = createContext(State);
+import Region from "./Region.tsx";
+import { StateContext, StateT } from "./State.ts";
+import { safeEntries } from "./logic/utils.ts";
+import { flipTopRegion } from "./logic/api.ts";
 
 function App() {
-  const state: StateT = useContext(StateContext);
+  const stateC: StateT = useContext(StateContext);
+  const [state, setState] = useState(stateC);
 
   const [imageUrl, setImageUrl] = useState<string | null>(null);
 
@@ -56,18 +35,22 @@ function App() {
     ],
   });
 
-  if (filesContent) {
-    state.cards = filesContent.map((file) => ({
-      card: {
-        content: { ctype: "image-local", blob: file.content },
-      },
-      region: "deck",
-    }));
-  }
-
   return (
     <>
       <h1>deckonomicon</h1>
+      <div className="card">
+        {safeEntries(state.regions).map(([regionId]) => (
+          <Region
+            key={regionId}
+            state={state}
+            onClick={() => {}}
+            onDoubleClick={() => {
+              setState((s) => flipTopRegion(s, regionId, "toggle"));
+            }}
+            regionId={regionId}
+          ></Region>
+        ))}
+      </div>
       <div className="card">
         <input type="url" onChange={(e) => setImageUrl(e.target.value)} />
         {imageUrl && (
@@ -93,6 +76,7 @@ function App() {
           ))}
       </div>
       <PWABadge />
+      <div className="card">{JSON.stringify(state, null, 2)}</div>
     </>
   );
 }
