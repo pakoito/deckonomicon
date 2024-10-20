@@ -54,7 +54,6 @@ function App() {
             onDoubleClick={() => {
               setState((s) => flipTopRegion(s, regionId, "toggle"));
             }}
-            onLongPress={() => {}}
             regionId={regionId}
           ></Region>
         ))}

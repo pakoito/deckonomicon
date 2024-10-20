@@ -1,4 +1,3 @@
-import { Tooltip } from "@chakra-ui/react";
 import { CardState } from "./logic/api";
 
 export type Props = {
@@ -13,41 +12,30 @@ export const Card = (props: Props) => {
   };
   const face =
     cardState.facing === "front" ? cardState.card.front : cardState.card.back;
-  const tooltipProps = {
-    label: cardState.card.label,
-  };
   switch (face.ctype) {
     case "text":
       return (
-        <Tooltip {...tooltipProps}>
-          <div
-            style={{
-              width: "100%",
-              height: "100%",
-              display: "flex",
-              alignItems: "center",
-              justifyContent: "center",
-            }}
-          >
-            {face.text}
-          </div>
-        </Tooltip>
+        <div
+          style={{
+            width: "100%",
+            height: "100%",
+            display: "flex",
+            alignItems: "center",
+            justifyContent: "center",
+          }}
+        >
+          {face.text}
+        </div>
       );
     case "image-local":
-      return (
-        <Tooltip {...tooltipProps}>
-          <img alt={cardState.card.hover} src={face.blob}></img>
-        </Tooltip>
-      );
+      return <img alt={cardState.card.hover} src={face.blob}></img>;
     case "image-remote":
       return (
-        <Tooltip {...tooltipProps}>
-          <img
-            style={innerRectangleStyle}
-            alt={cardState.card.hover}
-            src={face.url}
-          ></img>
-        </Tooltip>
+        <img
+          style={innerRectangleStyle}
+          alt={cardState.card.hover}
+          src={face.url}
+        ></img>
       );
     default:
       return <div>Unknown card type: {face}</div>;

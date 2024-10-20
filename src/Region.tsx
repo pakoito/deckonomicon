@@ -1,4 +1,4 @@
-import { CSSProperties, useCallback, useRef, useState } from "react";
+import { CSSProperties } from "react";
 import { RegionId } from "./logic/api";
 import { StateT } from "./State";
 import { Card } from "./Card";
@@ -8,7 +8,6 @@ type Props = {
   regionId: RegionId;
   onClick: () => void;
   onDoubleClick: () => void;
-  onLongPress: () => void;
 };
 
 const Region = (props: Props) => {
@@ -19,7 +18,6 @@ const Region = (props: Props) => {
 
   const topCard = topCardId ? props.state.cards[topCardId] ?? null : null;
 
-  const [isHovered, setIsHovered] = useState(false);
   const borderRadius = 16;
   const distance = 12;
   const innerRadius = borderRadius - distance;
@@ -42,31 +40,7 @@ const Region = (props: Props) => {
     backgroundColor: "#3498db",
     borderRadius: `${innerRadius}px`,
     transition: "opacity 0.3s ease",
-    opacity: isHovered ? 0.5 : 1,
   };
-
-  const longPressTimer = useRef<NodeJS.Timeout | null>(null);
-  const longPressDuration = 500; // milliseconds
-
-  const longPress = props.onLongPress;
-  const handleMouseDown = useCallback(() => {
-    longPressTimer.current = setTimeout(() => {
-      longPress();
-    }, longPressDuration);
-  }, [longPress]);
-
-  const handleMouseUp = useCallback(() => {
-    if (longPressTimer.current) {
-      clearTimeout(longPressTimer.current);
-    }
-  }, []);
-
-  const handleMouseLeave = useCallback(() => {
-    if (longPressTimer.current) {
-      clearTimeout(longPressTimer.current);
-    }
-    setIsHovered(false);
-  }, []);
 
   return (
     <div
@@ -74,12 +48,8 @@ const Region = (props: Props) => {
         ...boxContainerStyle,
         position: "relative",
       }}
-      onMouseEnter={() => setIsHovered(true)}
-      onMouseLeave={handleMouseLeave}
       onClick={props.onClick}
       onDoubleClick={props.onDoubleClick}
-      onMouseDown={handleMouseDown}
-      onMouseUp={handleMouseUp}
     >
       <div
         style={{
