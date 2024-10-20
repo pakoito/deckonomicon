@@ -50,7 +50,6 @@ function App() {
           <Region
             key={regionId}
             state={state}
-            onClick={() => {}}
             onDoubleClick={() => {
               setState((s) => flipTopRegion(s, regionId, "toggle"));
             }}

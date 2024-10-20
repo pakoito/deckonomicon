@@ -10,6 +10,7 @@ export type Face =
 export type Card = {
   id: CardId;
   label: string;
+  description: string;
   hover: string;
   front: Face;
   back: Face;

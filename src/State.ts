@@ -29,6 +29,7 @@ export const State: StateT = {
       card: {
         id: "1",
         label: "Sum Card",
+        description: "Some awesome card 1",
         hover: "Check this awesome card",
         front: { ctype: "text", text: "This is card 1" },
         back: { ctype: "text", text: "CARDMANCER BITCH" },
@@ -41,6 +42,7 @@ export const State: StateT = {
         id: "2",
         label: "Sum Card",
         hover: "Check this awesome card",
+        description: "Some awesome card 2",
         front: {
           ctype: "image-remote",
           url: "https://cards.scryfall.io/large/front/0/4/0476ea45-ee6d-41c6-93b8-50f92cb37b78.jpg?1673305697",
