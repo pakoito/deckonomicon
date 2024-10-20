@@ -86,6 +86,7 @@ const Region = (props: Props) => {
           fontSize: "14px",
           fontWeight: "bold",
           color: "white",
+          borderRadius: "4px",
         }}
       >
         {region.region.label}
