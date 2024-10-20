@@ -1,4 +1,4 @@
-import { Tooltip, TooltipProps } from "@chakra-ui/react";
+import { Tooltip } from "@chakra-ui/react";
 import { CardState } from "./logic/api";
 
 export type Props = {
