@@ -83,6 +83,7 @@ export const moveByTop = (
     const oldCardId = originRegion.deck.pop()!;
     const oldCard = newGame.cards[oldCardId]!;
     oldCard.facing = options.facing ?? targetRegion.region.config.facing;
+    oldCard.angle = targetRegion.region.config.angle;
     targetRegion.deck.push(oldCardId);
   }
   return newGame;
@@ -105,6 +106,7 @@ export const moveById = (
   cards.forEach((cardId) => {
     const oldCard = newGame.cards[cardId]!;
     oldCard.facing = options.facing ?? targetRegion.region.config.facing;
+    oldCard.angle = targetRegion.region.config.angle;
     targetRegion.deck.push(cardId);
   });
   return newGame;
