@@ -32,7 +32,6 @@ const Region = (props: Props) => {
     alignItems: "center",
     border: "2px solid #3498db",
     borderRadius: `${borderRadius}px`,
-    opacity: isHovered ? 0.5 : 1,
     transition: "all 0.3s ease",
     padding: `${distance}px`,
   };
@@ -43,6 +42,7 @@ const Region = (props: Props) => {
     backgroundColor: "#3498db",
     borderRadius: `${innerRadius}px`,
     transition: "opacity 0.3s ease",
+    opacity: isHovered ? 0.5 : 1,
   };
 
   const longPressTimer = useRef<NodeJS.Timeout | null>(null);
