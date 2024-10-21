@@ -5,23 +5,50 @@ export type StateT = Game;
 
 export const State: StateT = {
   regions: {
-    Deck: {
+    deck: {
       region: {
         id: "1",
         label: "Deck",
         hover: "Hover over this region",
         config: { facing: "back", angle: "up" },
       },
-      deck: ["1"],
+      deck: ["1", "2"],
     },
-    Hand: {
+    hand: {
       region: {
         id: "1",
         label: "Hand",
         hover: "Hover over this region",
         config: { facing: "front", angle: "up" },
       },
-      deck: ["2"],
+      deck: [],
+    },
+    play: {
+      region: {
+        id: "1",
+        label: "Play",
+        hover: "Hover over this region",
+        config: { facing: "front", angle: "up" },
+      },
+      deck: [],
+    },
+    discard: {
+      region: {
+        id: "1",
+        label: "Discard",
+        hover: "Hover over this region",
+        config: { facing: "front", angle: "up" },
+      },
+      deck: [],
+    },
+    destroy: {
+      region: {
+        id: "1",
+        label: "Removed from game",
+        hover: "Hover over this region",
+        config: { facing: "front", angle: "up" },
+      },
+      deck: [],
     },
   },
   cards: {
@@ -34,7 +61,7 @@ export const State: StateT = {
         front: { ctype: "text", text: "This is card 1" },
         back: { ctype: "text", text: "CARDMANCER BITCH" },
       },
-      facing: "front",
+      facing: "back",
       angle: "up",
     },
     "2": {
@@ -49,7 +76,7 @@ export const State: StateT = {
         },
         back: { ctype: "text", text: "CARDMANCER BITCH" },
       },
-      facing: "front",
+      facing: "back",
       angle: "up",
     },
   },

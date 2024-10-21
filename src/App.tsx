@@ -10,7 +10,7 @@ import {
 import Region, { CardCallbacks, RegionCallbacks } from "./Region.tsx";
 import { StateContext, StateT } from "./State.ts";
 import { safeEntries } from "./logic/utils.ts";
-import { flipCard, shuffleRegion } from "./logic/api.ts";
+import { flipCard, moveById, shuffleRegion, turnCard } from "./logic/api.ts";
 
 function App() {
   const stateC: StateT = useContext(StateContext);
@@ -48,16 +48,53 @@ function App() {
       >
         {safeEntries(state.regions).map(([regionId]) => {
           const cardCallbacks: CardCallbacks = {
-            draw: ["Draw", () => {}],
-            play: ["Play", () => {}],
-            discard: ["Discard", () => {}],
-            destroy: ["Destroy", () => {}],
+            draw: [
+              "Draw",
+              (cardId) =>
+                setState((prevState) =>
+                  moveById(prevState, regionId, "hand", new Set([cardId]))
+                ),
+            ],
+            play: [
+              "Play",
+              (cardId) =>
+                setState((prevState) =>
+                  moveById(prevState, regionId, "play", new Set([cardId]))
+                ),
+            ],
+            discard: [
+              "Discard",
+              (cardId) =>
+                setState((prevState) =>
+                  moveById(prevState, regionId, "discard", new Set([cardId]))
+                ),
+            ],
+            destroy: [
+              "Exile",
+              (cardId) =>
+                setState((prevState) =>
+                  moveById(prevState, regionId, "destroy", new Set([cardId]))
+                ),
+            ],
+            return: [
+              "Return to Deck",
+              (cardId) =>
+                setState((prevState) =>
+                  moveById(prevState, regionId, "deck", new Set([cardId]))
+                ),
+            ],
             flip: [
               "Flip",
               (cardId) =>
                 setState((prevState) => flipCard(prevState, cardId, "toggle")),
             ],
-            turn: ["Turn", () => {}],
+            turn: [
+              "Turn",
+              (cardId) =>
+                setState((prevState) =>
+                  turnCard(prevState, cardId, "clockwise")
+                ),
+            ],
           };
 
           const regionCallbacks: RegionCallbacks = {
