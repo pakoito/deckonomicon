@@ -105,7 +105,12 @@ const Region = (props: Props) => {
         <ModalContent>
           <ModalHeader>
             {region.region.label}
-            {topCard && ` [1/${region.deck.length}] - ${topCard.card.label}`}
+            {topCard &&
+              ` [1/${region.deck.length}] - ${
+                topCard.facing === "front"
+                  ? topCard.card.front.label
+                  : topCard.card.back.label
+              }`}
           </ModalHeader>
           <ModalCloseButton />
           <ModalBody pb={6}>
@@ -122,7 +127,11 @@ const Region = (props: Props) => {
                   >
                     <Card cardState={topCard} />
                   </div>
-                  <Text>{topCard.card.description}</Text>
+                  <Text>
+                    {topCard.facing === "front"
+                      ? topCard.card.front.description
+                      : topCard.card.back.description}
+                  </Text>
                 </HStack>
               )}
               {topCardId &&

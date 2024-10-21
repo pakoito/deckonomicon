@@ -2,16 +2,20 @@ import { shuffleArray } from "./utils";
 
 export type CardId = string;
 
-export type Face =
+export type FaceContent =
   | { ctype: "image-remote"; url: string }
   | { ctype: "image-local"; blob: string }
   | { ctype: "text"; text: string };
 
-export type Card = {
-  id: CardId;
+export type Face = {
   label: string;
   description: string;
   hover: string;
+  content: FaceContent;
+};
+
+export type Card = {
+  id: CardId;
   front: Face;
   back: Face;
 };

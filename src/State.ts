@@ -55,11 +55,18 @@ export const State: StateT = {
     "1": {
       card: {
         id: "1",
-        label: "Sum Card",
-        description: "Some awesome card 1",
-        hover: "Check this awesome card",
-        front: { ctype: "text", text: "This is card 1" },
-        back: { ctype: "text", text: "CARDMANCER BITCH" },
+        front: {
+          label: "The card uno",
+          description: "Some awesome card 1",
+          hover: "Check this awesome card",
+          content: { ctype: "text", text: "This is card 1" },
+        },
+        back: {
+          label: "Sum Card",
+          description: "Some awesome card",
+          hover: "Check this awesome card",
+          content: { ctype: "text", text: "CARDMANCER BITCH" },
+        },
       },
       facing: "back",
       angle: "up",
@@ -67,14 +74,21 @@ export const State: StateT = {
     "2": {
       card: {
         id: "2",
-        label: "Sum Card",
-        hover: "Check this awesome card",
-        description: "Some awesome card 2",
         front: {
-          ctype: "image-remote",
-          url: "https://cards.scryfall.io/large/front/0/4/0476ea45-ee6d-41c6-93b8-50f92cb37b78.jpg?1673305697",
+          label: "Card 2",
+          hover: "Tegminate",
+          description: "Destroy target boo boo",
+          content: {
+            ctype: "image-remote",
+            url: "https://cards.scryfall.io/large/front/0/4/0476ea45-ee6d-41c6-93b8-50f92cb37b78.jpg?1673305697",
+          },
         },
-        back: { ctype: "text", text: "CARDMANCER BITCH" },
+        back: {
+          label: "Sum Card",
+          description: "Some awesome card",
+          hover: "Check this awesome card",
+          content: { ctype: "text", text: "CARDMANCER BITCH" },
+        },
       },
       facing: "back",
       angle: "up",

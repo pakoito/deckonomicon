@@ -12,7 +12,7 @@ export const Card = (props: Props) => {
   };
   const face =
     cardState.facing === "front" ? cardState.card.front : cardState.card.back;
-  switch (face.ctype) {
+  switch (face.content.ctype) {
     case "text":
       return (
         <div
@@ -24,20 +24,20 @@ export const Card = (props: Props) => {
             justifyContent: "center",
           }}
         >
-          {face.text}
+          {face.content.text}
         </div>
       );
     case "image-local":
-      return <img alt={cardState.card.hover} src={face.blob}></img>;
+      return <img alt={face.hover} src={face.content.blob}></img>;
     case "image-remote":
       return (
         <img
           style={innerRectangleStyle}
-          alt={cardState.card.hover}
-          src={face.url}
+          alt={face.hover}
+          src={face.content.url}
         ></img>
       );
     default:
-      return <div>Unknown card type: {face}</div>;
+      return <div>Unknown card type: {face.content}</div>;
   }
 };
