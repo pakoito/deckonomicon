@@ -1,11 +1,7 @@
 import { CSSProperties } from "react";
-import { CardId, RegionId } from "./logic/api";
+import { RegionId } from "./logic/api";
 import { StateT } from "./State";
 import { Card } from "./Card";
-
-export type CardCallbacks = Record<string, [string, (id: CardId) => void]>;
-
-export type RegionCallbacks = Record<string, [string, (id: RegionId) => void]>;
 
 export type Props = {
   state: StateT;
@@ -13,7 +9,7 @@ export type Props = {
   onClick: (id: RegionId) => void;
 };
 
-const Region = (props: Props) => {
+const RegionStack = (props: Props) => {
   const region = props.state.regions[props.regionId]!;
 
   const topCardId =
@@ -79,4 +75,4 @@ const Region = (props: Props) => {
   );
 };
 
-export default Region;
+export default RegionStack;

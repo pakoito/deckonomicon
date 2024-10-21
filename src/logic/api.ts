@@ -42,9 +42,11 @@ const turnAngle = (angle: Angle, direction: Direction): Angle => {
   }
 };
 
-export type RegionConfig = { facing: Facing; angle: Angle };
-
 export type RegionId = string;
+
+export type RegionType = "stack" | "board";
+
+export type RegionConfig = { facing: Facing; angle: Angle; rtype: RegionType };
 
 export type Region = {
   id: RegionId;

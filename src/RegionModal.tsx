@@ -13,10 +13,13 @@ import {
   Text,
 } from "@chakra-ui/react";
 import { Card } from "./Card";
-import { safeValues } from "./logic/utils";
-import { RegionId } from "./logic/api";
-import { CardCallbacks, RegionCallbacks } from "./Region";
+import { safeEntries } from "./logic/utils";
+import { CardId, RegionId } from "./logic/api";
 import { StateT } from "./State";
+
+export type CardCallbacks = Record<string, [string, (id: CardId) => void]>;
+
+export type RegionCallbacks = Record<string, [string, (id: RegionId) => void]>;
 
 export type Props = {
   state: StateT;
@@ -26,7 +29,7 @@ export type Props = {
   getOnOpen: (onOpen: () => void) => void;
 };
 
-export const RegionModal = (props: Props) => {
+const RegionModal = (props: Props) => {
   const region = props.state.regions[props.regionId]!;
 
   const topCardId =
@@ -82,30 +85,38 @@ export const RegionModal = (props: Props) => {
             )}
             {topCardId &&
               topCard &&
-              safeValues(props.cardCallbacks).map(([label, callback]) => (
+              safeEntries(props.cardCallbacks).map(
+                ([key, [label, callback]]) => (
+                  <Button
+                    key={key}
+                    onClick={() => {
+                      onClose();
+                      callback(topCardId);
+                    }}
+                  >
+                    {label}
+                  </Button>
+                )
+              )}
+            {topCardId && topCard && <Divider />}
+            {safeEntries(props.regionCallbacks).map(
+              ([key, [label, callback]]) => (
                 <Button
+                  key={key}
                   onClick={() => {
                     onClose();
-                    callback(topCardId);
+                    callback(props.regionId);
                   }}
                 >
                   {label}
                 </Button>
-              ))}
-            {topCardId && topCard && <Divider />}
-            {safeValues(props.regionCallbacks).map(([label, callback]) => (
-              <Button
-                onClick={() => {
-                  onClose();
-                  callback(props.regionId);
-                }}
-              >
-                {label}
-              </Button>
-            ))}
+              )
+            )}
           </Flex>
         </ModalBody>
       </ModalContent>
     </Modal>
   );
 };
+
+export default RegionModal;

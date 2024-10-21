@@ -7,11 +7,12 @@ import {
   FileTypeValidator,
   FileSizeValidator,
 } from "use-file-picker/validators";
-import Region, { CardCallbacks, RegionCallbacks } from "./Region.tsx";
+import RegionStack from "./RegionStack.tsx";
 import { StateContext, StateT } from "./State.ts";
 import { safeEntries } from "./logic/utils.ts";
 import { flipCard, moveById, shuffleRegion, turnCard } from "./logic/api.ts";
-import { RegionModal } from "./RegionModal.tsx";
+import RegionModal, { CardCallbacks, RegionCallbacks } from "./RegionModal.tsx";
+import RegionBoard from "./RegionBoard.tsx";
 
 function App() {
   const stateC: StateT = useContext(StateContext);
@@ -43,11 +44,12 @@ function App() {
         className="card"
         style={{
           display: "flex",
-          flexDirection: "row",
+          flexDirection: "column",
           gap: "10px",
         }}
       >
         {safeEntries(state.regions).map(([regionId]) => {
+          const region = state.regions[regionId]!;
           const cardCallbacks: CardCallbacks = {
             draw: [
               "Draw",
@@ -110,12 +112,23 @@ function App() {
           let onOpen: () => void = () => {};
           return (
             <>
-              <Region
-                key={regionId}
-                state={state}
-                regionId={regionId}
-                onClick={() => onOpen()}
-              />
+              {region.region.config.rtype === "stack" && (
+                <RegionStack
+                  key={regionId}
+                  state={state}
+                  regionId={regionId}
+                  onClick={() => onOpen()}
+                />
+              )}
+              {region.region.config.rtype === "board" && (
+                <RegionBoard
+                  key={regionId}
+                  state={state}
+                  regionId={regionId}
+                  onClickRegion={() => onOpen()}
+                  onClickCard={() => {}}
+                />
+              )}
               <RegionModal
                 state={state}
                 regionId={regionId}
