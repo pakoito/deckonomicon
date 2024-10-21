@@ -16,6 +16,7 @@ import { Card } from "./Card";
 import { safeEntries } from "./logic/utils";
 import { CardId, RegionId } from "./logic/api";
 import { StateT } from "./State";
+import { useState } from "react";
 
 export type CardCallbacks = Record<string, [string, (id: CardId) => void]>;
 
@@ -26,20 +27,22 @@ export type Props = {
   regionId: RegionId;
   cardCallbacks: CardCallbacks;
   regionCallbacks: RegionCallbacks;
-  getOnOpen: (onOpen: () => void) => void;
+  getOnOpen: (onOpen: (cardId: CardId | undefined) => void) => void;
 };
 
 const RegionModal = (props: Props) => {
+  const [cardId, setCardId] = useState<CardId>();
+
   const region = props.state.regions[props.regionId]!;
 
-  const topCardId =
-    region.deck.length === 0 ? null : region.deck[region.deck.length - 1];
-
-  const topCard = topCardId ? props.state.cards[topCardId] ?? null : null;
+  const card = cardId ? props.state.cards[cardId] ?? null : null;
 
   const { isOpen, onOpen, onClose } = useDisclosure();
 
-  props.getOnOpen(onOpen);
+  props.getOnOpen((cardId) => {
+    onOpen();
+    setCardId(cardId);
+  });
 
   return (
     <Modal
@@ -54,17 +57,17 @@ const RegionModal = (props: Props) => {
       <ModalContent>
         <ModalHeader>
           {region.region.label}
-          {topCard &&
+          {card &&
             ` [1/${region.deck.length}] - ${
-              topCard.facing === "front"
-                ? topCard.card.front.label
-                : topCard.card.back.label
+              card.facing === "front"
+                ? card.card.front.label
+                : card.card.back.label
             }`}
         </ModalHeader>
         <ModalCloseButton />
         <ModalBody pb={6}>
           <Flex direction={"column"} gap={"8px"}>
-            {topCard && (
+            {card && (
               <HStack>
                 <div
                   style={{
@@ -74,31 +77,31 @@ const RegionModal = (props: Props) => {
                     borderRadius: "16px",
                   }}
                 >
-                  <Card cardState={topCard} />
+                  <Card cardState={card} />
                 </div>
                 <Text>
-                  {topCard.facing === "front"
-                    ? topCard.card.front.description
-                    : topCard.card.back.description}
+                  {card.facing === "front"
+                    ? card.card.front.description
+                    : card.card.back.description}
                 </Text>
               </HStack>
             )}
-            {topCardId &&
-              topCard &&
+            {cardId &&
+              card &&
               safeEntries(props.cardCallbacks).map(
                 ([key, [label, callback]]) => (
                   <Button
                     key={key}
                     onClick={() => {
                       onClose();
-                      callback(topCardId);
+                      callback(cardId);
                     }}
                   >
                     {label}
                   </Button>
                 )
               )}
-            {topCardId && topCard && <Divider />}
+            {cardId && card && <Divider />}
             {safeEntries(props.regionCallbacks).map(
               ([key, [label, callback]]) => (
                 <Button

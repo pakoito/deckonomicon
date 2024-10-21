@@ -10,7 +10,13 @@ import {
 import RegionStack from "./RegionStack.tsx";
 import { StateContext, StateT } from "./State.ts";
 import { safeEntries } from "./logic/utils.ts";
-import { flipCard, moveById, shuffleRegion, turnCard } from "./logic/api.ts";
+import {
+  CardId,
+  flipCard,
+  moveById,
+  shuffleRegion,
+  turnCard,
+} from "./logic/api.ts";
 import RegionModal, { CardCallbacks, RegionCallbacks } from "./RegionModal.tsx";
 import RegionBoard from "./RegionBoard.tsx";
 
@@ -39,13 +45,12 @@ function App() {
 
   return (
     <>
-      <h1>deckonomicon</h1>
       <div
         className="card"
         style={{
           display: "flex",
           flexDirection: "column",
-          gap: "10px",
+          gap: "20px",
         }}
       >
         {safeEntries(state.regions).map(([regionId]) => {
@@ -109,7 +114,7 @@ function App() {
             search: ["Search", () => {}],
           };
 
-          let onOpen: () => void = () => {};
+          let onOpen: (cardId: CardId | undefined) => void = () => {};
           return (
             <>
               {region.region.config.rtype === "stack" && (
@@ -117,7 +122,7 @@ function App() {
                   key={regionId}
                   state={state}
                   regionId={regionId}
-                  onClick={() => onOpen()}
+                  onClick={() => onOpen(region.deck[0])}
                 />
               )}
               {region.region.config.rtype === "board" && (
@@ -125,8 +130,8 @@ function App() {
                   key={regionId}
                   state={state}
                   regionId={regionId}
-                  onClickRegion={() => onOpen()}
-                  onClickCard={() => {}}
+                  onClickRegion={() => onOpen(region.deck[0])}
+                  onClickCard={(_, cardId) => onOpen(cardId)}
                 />
               )}
               <RegionModal

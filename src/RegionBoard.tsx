@@ -13,11 +13,6 @@ export type Props = {
 const RegionBoard = (props: Props) => {
   const region = props.state.regions[props.regionId]!;
 
-  const topCardId =
-    region.deck.length === 0 ? null : region.deck[region.deck.length - 1];
-
-  const topCard = topCardId ? props.state.cards[topCardId] ?? null : null;
-
   const borderRadius = 16;
   const distance = 12;
   const innerRadius = borderRadius - distance;
@@ -31,6 +26,7 @@ const RegionBoard = (props: Props) => {
     borderRadius: `${borderRadius}px`,
     transition: "all 0.3s ease",
     padding: `${distance}px`,
+    gap: "10px",
   };
 
   const innerRectangleStyle = {
@@ -48,7 +44,7 @@ const RegionBoard = (props: Props) => {
         position: "relative",
       }}
       onClick={() => {
-        props.onClickRegion(props.regionId);
+        region.deck.length === 0 && props.onClickRegion(props.regionId);
       }}
     >
       <div
@@ -68,14 +64,20 @@ const RegionBoard = (props: Props) => {
         {region.region.label}
       </div>
 
-      <div
-        style={innerRectangleStyle}
-        onClick={() => {
-          topCardId && props.onClickCard(props.regionId, topCardId);
-        }}
-      >
-        {topCard && <Card cardState={topCard} />}
-      </div>
+      {region.deck.map((cardId) => {
+        const card = props.state.cards[cardId]!;
+        return (
+          <div
+            key={cardId}
+            style={innerRectangleStyle}
+            onClick={() => {
+              props.onClickCard(props.regionId, cardId);
+            }}
+          >
+            <Card cardState={card} />
+          </div>
+        );
+      })}
     </div>
   );
 };
