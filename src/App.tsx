@@ -11,6 +11,7 @@ import Region, { CardCallbacks, RegionCallbacks } from "./Region.tsx";
 import { StateContext, StateT } from "./State.ts";
 import { safeEntries } from "./logic/utils.ts";
 import { flipCard, moveById, shuffleRegion, turnCard } from "./logic/api.ts";
+import { RegionModal } from "./RegionModal.tsx";
 
 function App() {
   const stateC: StateT = useContext(StateContext);
@@ -106,14 +107,25 @@ function App() {
             search: ["Search", () => {}],
           };
 
+          let onOpen: () => void = () => {};
           return (
-            <Region
-              key={regionId}
-              state={state}
-              regionId={regionId}
-              cardCallbacks={cardCallbacks}
-              regionCallbacks={regionCallbacks}
-            ></Region>
+            <>
+              <Region
+                key={regionId}
+                state={state}
+                regionId={regionId}
+                onClick={() => onOpen()}
+              />
+              <RegionModal
+                state={state}
+                regionId={regionId}
+                cardCallbacks={cardCallbacks}
+                regionCallbacks={regionCallbacks}
+                getOnOpen={(f) => {
+                  onOpen = f;
+                }}
+              />
+            </>
           );
         })}
       </div>

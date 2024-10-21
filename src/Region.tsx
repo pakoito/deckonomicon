@@ -2,21 +2,6 @@ import { CSSProperties } from "react";
 import { CardId, RegionId } from "./logic/api";
 import { StateT } from "./State";
 import { Card } from "./Card";
-import {
-  Button,
-  Flex,
-  HStack,
-  Modal,
-  ModalBody,
-  ModalCloseButton,
-  ModalContent,
-  ModalHeader,
-  ModalOverlay,
-  useDisclosure,
-  Text,
-  Divider,
-} from "@chakra-ui/react";
-import { safeValues } from "./logic/utils";
 
 export type CardCallbacks = Record<string, [string, (id: CardId) => void]>;
 
@@ -25,13 +10,10 @@ export type RegionCallbacks = Record<string, [string, (id: RegionId) => void]>;
 export type Props = {
   state: StateT;
   regionId: RegionId;
-  cardCallbacks: CardCallbacks;
-  regionCallbacks: RegionCallbacks;
+  onClick: (id: RegionId) => void;
 };
 
 const Region = (props: Props) => {
-  const { isOpen, onOpen, onClose } = useDisclosure();
-
   const region = props.state.regions[props.regionId]!;
 
   const topCardId =
@@ -64,104 +46,36 @@ const Region = (props: Props) => {
   };
 
   return (
-    <>
+    <div
+      style={{
+        ...boxContainerStyle,
+        position: "relative",
+      }}
+      onClick={() => {
+        props.onClick(props.regionId);
+      }}
+    >
       <div
         style={{
-          ...boxContainerStyle,
-          position: "relative",
+          position: "absolute",
+          top: "-18px",
+          left: "50%",
+          transform: "translateX(-50%)",
+          backgroundColor: "#3498db",
+          padding: "2px 6px",
+          fontSize: "14px",
+          fontWeight: "bold",
+          color: "white",
+          borderRadius: "4px",
         }}
-        onClick={onOpen}
       >
-        <div
-          style={{
-            position: "absolute",
-            top: "-18px",
-            left: "50%",
-            transform: "translateX(-50%)",
-            backgroundColor: "#3498db",
-            padding: "2px 6px",
-            fontSize: "14px",
-            fontWeight: "bold",
-            color: "white",
-            borderRadius: "4px",
-          }}
-        >
-          {region.region.label}
-        </div>
-
-        <div style={innerRectangleStyle}>
-          {topCard && <Card cardState={topCard} />}
-        </div>
+        {region.region.label}
       </div>
-      <Modal
-        closeOnOverlayClick={false}
-        isOpen={isOpen}
-        onClose={onClose}
-        size={"full"}
-        blockScrollOnMount={true}
-        scrollBehavior="inside"
-      >
-        <ModalOverlay />
-        <ModalContent>
-          <ModalHeader>
-            {region.region.label}
-            {topCard &&
-              ` [1/${region.deck.length}] - ${
-                topCard.facing === "front"
-                  ? topCard.card.front.label
-                  : topCard.card.back.label
-              }`}
-          </ModalHeader>
-          <ModalCloseButton />
-          <ModalBody pb={6}>
-            <Flex direction={"column"} gap={"8px"}>
-              {topCard && (
-                <HStack>
-                  <div
-                    style={{
-                      width: "175px",
-                      height: "245px",
-                      backgroundColor: "#3498db",
-                      borderRadius: `${innerRadius}px`,
-                    }}
-                  >
-                    <Card cardState={topCard} />
-                  </div>
-                  <Text>
-                    {topCard.facing === "front"
-                      ? topCard.card.front.description
-                      : topCard.card.back.description}
-                  </Text>
-                </HStack>
-              )}
-              {topCardId &&
-                topCard &&
-                safeValues(props.cardCallbacks).map(([label, callback]) => (
-                  <Button
-                    onClick={() => {
-                      onClose();
-                      callback(topCardId);
-                    }}
-                  >
-                    {label}
-                  </Button>
-                ))}
-              <Divider />
-              {safeValues(props.regionCallbacks).map(([label, callback]) => (
-                <Button
-                  onClick={() => {
-                    onClose();
-                    callback(props.regionId);
-                  }}
-                >
-                  {label}
-                </Button>
-              ))}
-            </Flex>
-          </ModalBody>
-        </ModalContent>
-      </Modal>
-    </>
+
+      <div style={innerRectangleStyle}>
+        {topCard && <Card cardState={topCard} />}
+      </div>
+    </div>
   );
 };
 
