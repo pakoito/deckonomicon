@@ -65,6 +65,13 @@ export type Game = {
   cards: Record<CardId, CardState>;
 };
 
+export type GameState = {
+  game: Game;
+  enabled: boolean;
+};
+
+export type ApplicationState = Record<string, GameState>;
+
 export const newGame = (state: Game): Game => {
   const newGame = structuredClone(state);
   return newGame;
