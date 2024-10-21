@@ -19,7 +19,7 @@ import {
 } from "./logic/api.ts";
 import RegionModal, { CardCallbacks, RegionCallbacks } from "./RegionModal.tsx";
 import RegionBoard from "./RegionBoard.tsx";
-import { Flex } from "@chakra-ui/react";
+import { Box, Flex } from "@chakra-ui/react";
 
 function App() {
   const stateC: StateT = useContext(StateContext);
@@ -110,7 +110,7 @@ function App() {
 
           let onOpen: (cardId: CardId | undefined) => void = () => {};
           return (
-            <>
+            <Box key={`${regionId}-stack`}>
               {region.region.config.rtype === "stack" && (
                 <RegionStack
                   key={`${regionId}-stack`}
@@ -138,11 +138,11 @@ function App() {
                   onOpen = f;
                 }}
               />
-            </>
+            </Box>
           );
         })}
       </Flex>
-      <div className="card">
+      {/* <div className="card">
         <input type="url" onChange={(e) => setImageUrl(e.target.value)} />
         {imageUrl && (
           <div key={filesContent.length}>
@@ -166,8 +166,8 @@ function App() {
             </div>
           ))}
       </div>
+      <div className="card">{JSON.stringify(state, null, 2)}</div> */}
       <PWABadge />
-      <div className="card">{JSON.stringify(state, null, 2)}</div>
     </>
   );
 }
