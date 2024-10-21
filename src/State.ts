@@ -1,7 +1,7 @@
 import { createContext } from "react";
-import { Game } from "./logic/api";
+import { Deck } from "./logic/api";
 
-export type StateT = Game;
+export type StateT = Deck;
 
 export const State: StateT = {
   regions: {
