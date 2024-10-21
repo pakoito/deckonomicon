@@ -1,12 +1,6 @@
 import { useContext, useState } from "react";
 import PWABadge from "./PWABadge.tsx";
 import "./App.css";
-import { useFilePicker } from "use-file-picker";
-import {
-  FileAmountLimitValidator,
-  FileTypeValidator,
-  FileSizeValidator,
-} from "use-file-picker/validators";
 import RegionStack from "./RegionStack.tsx";
 import { StateContext, StateT } from "./State.ts";
 import { safeEntries } from "./logic/utils.ts";
@@ -25,24 +19,24 @@ function App() {
   const stateC: StateT = useContext(StateContext);
   const [state, setState] = useState(stateC);
 
-  const [imageUrl, setImageUrl] = useState<string | null>(null);
+  // const [imageUrl, setImageUrl] = useState<string | null>(null);
 
-  const { openFilePicker, filesContent, loading, errors } = useFilePicker({
-    readAs: "DataURL",
-    accept: ".png,.jpg,.jpeg",
-    multiple: true,
-    validators: [
-      new FileAmountLimitValidator({ max: 10 }),
-      new FileTypeValidator(["jpg", "png", "jpeg"]),
-      new FileSizeValidator({ maxFileSize: 10 * 1024 * 1024 /* 10 MB */ }),
-      /*new ImageDimensionsValidator({
-        maxHeight: 900, // in pixels
-        maxWidth: 1600,
-        minHeight: 10,
-        minWidth: 10,
-      }),*/
-    ],
-  });
+  // const { openFilePicker, filesContent, loading, errors } = useFilePicker({
+  //   readAs: "DataURL",
+  //   accept: ".png,.jpg,.jpeg",
+  //   multiple: true,
+  //   validators: [
+  //     new FileAmountLimitValidator({ max: 10 }),
+  //     new FileTypeValidator(["jpg", "png", "jpeg"]),
+  //     new FileSizeValidator({ maxFileSize: 10 * 1024 * 1024 /* 10 MB */ }),
+  //     /*new ImageDimensionsValidator({
+  //       maxHeight: 900, // in pixels
+  //       maxWidth: 1600,
+  //       minHeight: 10,
+  //       minWidth: 10,
+  //     }),*/
+  //   ],
+  // });
 
   return (
     <>
