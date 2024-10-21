@@ -2,6 +2,7 @@ import { CSSProperties } from "react";
 import { CardId, RegionId } from "./logic/api";
 import { StateT } from "./State";
 import { Card } from "./Card";
+import { Box, HStack } from "@chakra-ui/react";
 
 export type Props = {
   state: StateT;
@@ -27,7 +28,6 @@ const RegionBoard = (props: Props) => {
     backgroundColor: "white",
     transition: "all 0.3s ease",
     padding: `${distance}px`,
-    gap: "10px",
   };
 
   const cardRectangleStyle = {
@@ -65,20 +65,34 @@ const RegionBoard = (props: Props) => {
         {region.region.label}
       </div>
 
-      {region.deck.map((cardId) => {
-        const card = props.state.cards[cardId]!;
-        return (
-          <div
-            key={cardId}
-            style={cardRectangleStyle}
-            onClick={() => {
-              props.onClickCard(props.regionId, cardId);
-            }}
-          >
-            <Card cardState={card} />
-          </div>
-        );
-      })}
+      {region.deck.length > 0 && (
+        <Box
+          width={"400px"}
+          height={"350px"}
+          flexDirection={"row"}
+          overflowX="scroll"
+          padding="12px"
+        >
+          <HStack height={"350px"} gap="10px" minWidth="min-content">
+            {region.deck.map((cardId) => {
+              const card = props.state.cards[cardId]!;
+              return (
+                <Box
+                  key={cardId}
+                  width={"250px"}
+                  height={"100%"}
+                  style={cardRectangleStyle}
+                  onClick={() => {
+                    props.onClickCard(props.regionId, cardId);
+                  }}
+                >
+                  <Card cardState={card} />
+                </Box>
+              );
+            })}
+          </HStack>
+        </Box>
+      )}
     </div>
   );
 };

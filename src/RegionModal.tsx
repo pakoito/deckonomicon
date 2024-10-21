@@ -57,8 +57,9 @@ const RegionModal = (props: Props) => {
       <ModalContent>
         <ModalHeader>
           {region.region.label}
-          {card &&
-            ` [1/${region.deck.length}] - ${
+          {cardId &&
+            card &&
+            ` [${region.deck.indexOf(cardId) + 1}/${region.deck.length}] - ${
               card.facing === "front"
                 ? card.card.front.label
                 : card.card.back.label

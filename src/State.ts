@@ -12,7 +12,7 @@ export const State: StateT = {
         hover: "Hover over this region",
         config: { facing: "back", angle: "up", rtype: "stack" },
       },
-      deck: ["1", "2"],
+      deck: [],
     },
     hand: {
       region: {
@@ -21,7 +21,7 @@ export const State: StateT = {
         hover: "Hover over this region",
         config: { facing: "front", angle: "up", rtype: "board" },
       },
-      deck: [],
+      deck: ["1", "2", "3", "4"],
     },
     play: {
       region: {
@@ -68,7 +68,7 @@ export const State: StateT = {
           content: { ctype: "text", text: "CARDMANCER BITCH" },
         },
       },
-      facing: "back",
+      facing: "front",
       angle: "up",
     },
     "2": {
@@ -90,7 +90,45 @@ export const State: StateT = {
           content: { ctype: "text", text: "CARDMANCER BITCH" },
         },
       },
-      facing: "back",
+      facing: "front",
+      angle: "up",
+    },
+    "3": {
+      card: {
+        id: "3",
+        front: {
+          label: "The card 3",
+          description: "Some awesome card 3",
+          hover: "Check this awesome card",
+          content: { ctype: "text", text: "This is card 3" },
+        },
+        back: {
+          label: "Sum Card",
+          description: "Some awesome card",
+          hover: "Check this awesome card",
+          content: { ctype: "text", text: "CARDMANCER BITCH" },
+        },
+      },
+      facing: "front",
+      angle: "up",
+    },
+    "4": {
+      card: {
+        id: "4",
+        front: {
+          label: "The card 4",
+          description: "Some awesome card 4",
+          hover: "Check this awesome card",
+          content: { ctype: "text", text: "This is card 4" },
+        },
+        back: {
+          label: "Sum Card",
+          description: "Some awesome card",
+          hover: "Check this awesome card",
+          content: { ctype: "text", text: "CARDMANCER BITCH" },
+        },
+      },
+      facing: "front",
       angle: "up",
     },
   },

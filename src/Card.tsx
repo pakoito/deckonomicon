@@ -1,4 +1,5 @@
 import { CardState } from "./logic/api";
+import { Text } from "@chakra-ui/react";
 
 export type Props = {
   cardState: CardState;
@@ -15,7 +16,7 @@ export const Card = (props: Props) => {
   switch (face.content.ctype) {
     case "text":
       return (
-        <div
+        <Text
           style={{
             width: "100%",
             height: "100%",
@@ -25,7 +26,7 @@ export const Card = (props: Props) => {
           }}
         >
           {face.content.text}
-        </div>
+        </Text>
       );
     case "image-local":
       return <img alt={face.hover} src={face.content.blob}></img>;

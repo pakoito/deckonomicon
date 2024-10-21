@@ -19,6 +19,7 @@ import {
 } from "./logic/api.ts";
 import RegionModal, { CardCallbacks, RegionCallbacks } from "./RegionModal.tsx";
 import RegionBoard from "./RegionBoard.tsx";
+import { Flex } from "@chakra-ui/react";
 
 function App() {
   const stateC: StateT = useContext(StateContext);
@@ -45,14 +46,7 @@ function App() {
 
   return (
     <>
-      <div
-        className="card"
-        style={{
-          display: "flex",
-          flexDirection: "column",
-          gap: "20px",
-        }}
-      >
+      <Flex gap="20px" direction={"column"}>
         {safeEntries(state.regions).map(([regionId]) => {
           const region = state.regions[regionId]!;
           const cardCallbacks: CardCallbacks = {
@@ -119,7 +113,7 @@ function App() {
             <>
               {region.region.config.rtype === "stack" && (
                 <RegionStack
-                  key={regionId}
+                  key={`${regionId}-stack`}
                   state={state}
                   regionId={regionId}
                   onClick={() => onOpen(region.deck[0])}
@@ -127,7 +121,7 @@ function App() {
               )}
               {region.region.config.rtype === "board" && (
                 <RegionBoard
-                  key={regionId}
+                  key={`${regionId}-board`}
                   state={state}
                   regionId={regionId}
                   onClickRegion={() => onOpen(region.deck[0])}
@@ -135,6 +129,7 @@ function App() {
                 />
               )}
               <RegionModal
+                key={`${regionId}-modal`}
                 state={state}
                 regionId={regionId}
                 cardCallbacks={cardCallbacks}
@@ -146,7 +141,7 @@ function App() {
             </>
           );
         })}
-      </div>
+      </Flex>
       <div className="card">
         <input type="url" onChange={(e) => setImageUrl(e.target.value)} />
         {imageUrl && (
