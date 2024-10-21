@@ -24,12 +24,13 @@ const RegionBoard = (props: Props) => {
     alignItems: "center",
     border: "2px solid #3498db",
     borderRadius: `${borderRadius}px`,
+    backgroundColor: "white",
     transition: "all 0.3s ease",
     padding: `${distance}px`,
     gap: "10px",
   };
 
-  const innerRectangleStyle = {
+  const cardRectangleStyle = {
     width: "250px",
     height: "100%",
     backgroundColor: "#3498db",
@@ -69,7 +70,7 @@ const RegionBoard = (props: Props) => {
         return (
           <div
             key={cardId}
-            style={innerRectangleStyle}
+            style={cardRectangleStyle}
             onClick={() => {
               props.onClickCard(props.regionId, cardId);
             }}
