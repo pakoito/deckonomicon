@@ -29,6 +29,7 @@ import {
   DrawerHeader,
   DrawerOverlay,
   Flex,
+  HStack,
   IconButton,
   Slider,
   SliderFilledTrack,
@@ -280,9 +281,14 @@ function App() {
           </DrawerBody>
 
           <DrawerFooter>
-            <Button variant="outline" mr={3} onClick={onClose}>
-              Cancel
-            </Button>
+            <HStack>
+              <Button variant="outline" mr={3} onClick={onClose}>
+                Reset Game
+              </Button>
+              <Button variant="outline" mr={3} onClick={onClose}>
+                Return
+              </Button>
+            </HStack>
           </DrawerFooter>
         </DrawerContent>
       </Drawer>
