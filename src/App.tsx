@@ -1,4 +1,4 @@
-import { useContext, useState } from "react";
+import { useContext, useRef, useState } from "react";
 import PWABadge from "./PWABadge.tsx";
 import "./App.css";
 import RegionStack from "./RegionStack.tsx";
@@ -13,11 +13,41 @@ import {
 } from "./logic/api.ts";
 import RegionModal, { CardCallbacks, RegionCallbacks } from "./RegionModal.tsx";
 import RegionBoard from "./RegionBoard.tsx";
-import { Box, Flex } from "@chakra-ui/react";
+import {
+  Accordion,
+  AccordionButton,
+  AccordionIcon,
+  AccordionItem,
+  AccordionPanel,
+  Box,
+  Button,
+  Divider,
+  Drawer,
+  DrawerBody,
+  DrawerCloseButton,
+  DrawerContent,
+  DrawerFooter,
+  DrawerHeader,
+  DrawerOverlay,
+  Flex,
+  IconButton,
+  Slider,
+  SliderFilledTrack,
+  SliderMark,
+  SliderThumb,
+  SliderTrack,
+  useDisclosure,
+} from "@chakra-ui/react";
+import { HamburgerIcon } from "@chakra-ui/icons";
 
 function App() {
   const stateC: StateT = useContext(StateContext);
   const [state, setState] = useState(stateC);
+
+  const { isOpen, onOpen, onClose } = useDisclosure();
+  const btnRef = useRef<HTMLButtonElement>(null);
+
+  const [sliderValue, setSliderValue] = useState(1);
 
   // const [imageUrl, setImageUrl] = useState<string | null>(null);
 
@@ -38,8 +68,24 @@ function App() {
   //   ],
   // });
 
+  const sliderLabelStyles = {
+    mt: "4",
+    ml: "0",
+    fontSize: "sm",
+  };
+
   return (
     <>
+      <IconButton
+        icon={<HamburgerIcon />}
+        aria-label="Open menu"
+        ref={btnRef}
+        onClick={onOpen}
+        position="fixed"
+        top="4"
+        right="4"
+        zIndex="overlay"
+      />
       <Flex gap="20px" direction={"column"}>
         {safeEntries(state.regions).map(([regionId]) => {
           const region = state.regions[regionId]!;
@@ -136,6 +182,99 @@ function App() {
           );
         })}
       </Flex>
+      <Drawer
+        isOpen={isOpen}
+        placement="right"
+        onClose={onClose}
+        finalFocusRef={btnRef}
+        size={"lg"}
+      >
+        <DrawerOverlay />
+        <DrawerContent>
+          <DrawerCloseButton />
+          <DrawerHeader>Deckonomicon</DrawerHeader>
+
+          <DrawerBody>
+            <Accordion defaultIndex={[]} allowMultiple allowToggle>
+              <AccordionItem>
+                <h2>
+                  <AccordionButton>
+                    <Box as="span" flex="1" textAlign="left">
+                      Section 1 title
+                    </Box>
+                    <AccordionIcon />
+                  </AccordionButton>
+                </h2>
+                <AccordionPanel pb={4}>
+                  Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed
+                  do eiusmod tempor incididunt ut labore et dolore magna aliqua.
+                  Ut enim ad minim veniam, quis nostrud exercitation ullamco
+                  laboris nisi ut aliquip ex ea commodo consequat.
+                </AccordionPanel>
+              </AccordionItem>
+
+              <AccordionItem>
+                <h2>
+                  <AccordionButton>
+                    <Box as="span" flex="1" textAlign="left">
+                      Section 2 title
+                    </Box>
+                    <AccordionIcon />
+                  </AccordionButton>
+                </h2>
+                <AccordionPanel pb={4}>
+                  Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed
+                  do eiusmod tempor incididunt ut labore et dolore magna aliqua.
+                  Ut enim ad minim veniam, quis nostrud exercitation ullamco
+                  laboris nisi ut aliquip ex ea commodo consequat.
+                </AccordionPanel>
+              </AccordionItem>
+            </Accordion>
+            <Divider />
+            <Slider
+              defaultValue={1}
+              min={1}
+              max={4}
+              step={1}
+              onChange={(val) => setSliderValue(val)}
+            >
+              <SliderMark value={1} {...sliderLabelStyles}>
+                x1
+              </SliderMark>
+              <SliderMark value={2} {...sliderLabelStyles}>
+                x2
+              </SliderMark>
+              <SliderMark value={3} {...sliderLabelStyles}>
+                x3
+              </SliderMark>
+              <SliderMark value={4} {...sliderLabelStyles}>
+                x4
+              </SliderMark>
+              <SliderMark
+                value={sliderValue}
+                textAlign="center"
+                bg="#3498db"
+                color="white"
+                mt="4"
+                ml="-3.5"
+                w="12"
+              >
+                x{sliderValue}
+              </SliderMark>
+              <SliderTrack bg="red.100">
+                <SliderFilledTrack bg="#3498db" />
+              </SliderTrack>
+              <SliderThumb boxSize={5} />
+            </Slider>
+          </DrawerBody>
+
+          <DrawerFooter>
+            <Button variant="outline" mr={3} onClick={onClose}>
+              Cancel
+            </Button>
+          </DrawerFooter>
+        </DrawerContent>
+      </Drawer>
       {/* <div className="card">
         <input type="url" onChange={(e) => setImageUrl(e.target.value)} />
         {imageUrl && (
