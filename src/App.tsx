@@ -36,7 +36,6 @@ import {
   SliderThumb,
   SliderTrack,
   useDisclosure,
-  VStack,
 } from "@chakra-ui/react";
 import { HamburgerIcon } from "@chakra-ui/icons";
 
@@ -208,7 +207,7 @@ function App() {
                 <AccordionPanel pb={4}>
                   <Flex direction={"column"} gap={"4px"}>
                     <Button onClick={() => {}}>Load from File</Button>
-                    <Button onClick={() => {}}>Load from Clipboard</Button>
+                    <Button onClick={() => {}}>Load from Clipboard URL</Button>
                   </Flex>
                 </AccordionPanel>
               </AccordionItem>
@@ -225,7 +224,7 @@ function App() {
                 <AccordionPanel pb={4}>
                   <Flex direction={"column"} gap={"4px"}>
                     <Button onClick={() => {}}>Load from File</Button>
-                    <Button onClick={() => {}}>Load from Clipboard</Button>
+                    <Button onClick={() => {}}>Load from Clipboard URL</Button>
                   </Flex>
                 </AccordionPanel>
               </AccordionItem>
