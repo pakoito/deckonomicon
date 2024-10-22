@@ -13,15 +13,14 @@ import {
 } from "@chakra-ui/react";
 import { Card } from "./Card";
 import { safeEntries } from "./logic/utils";
-import { CardId, RegionId } from "./logic/api";
-import { StateT } from "./State";
+import { CardId, Deck, RegionId } from "./logic/api";
 
 export type CardCallbacks = Record<string, [string, (id: CardId) => void]>;
 
 export type RegionCallbacks = Record<string, [string, (id: RegionId) => void]>;
 
 export type Props = {
-  state: StateT;
+  state: Deck;
   regionId: RegionId;
   cardId: CardId | undefined;
   cardCallbacks: CardCallbacks;

@@ -1,11 +1,10 @@
 import { CSSProperties } from "react";
-import { CardId, RegionId } from "./logic/api";
-import { StateT } from "./State";
+import { Deck, CardId, RegionId } from "./logic/api";
 import { Card } from "./Card";
 import { Box, HStack } from "@chakra-ui/react";
 
 export type Props = {
-  state: StateT;
+  state: Deck;
   regionId: RegionId;
   onClickRegion: (id: RegionId) => void;
   onClickCard: (id: RegionId, card: CardId) => void;

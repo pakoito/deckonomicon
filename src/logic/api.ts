@@ -67,6 +67,7 @@ export type CardState = {
 };
 
 export type Deck = {
+  label: string;
   regions: Record<RegionId, RegionState>;
   cards: Record<CardId, CardState>;
 };

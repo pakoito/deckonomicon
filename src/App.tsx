@@ -11,10 +11,20 @@ import {
   turnCard,
 } from "./logic/api.ts";
 import RegionModal, { CardCallbacks, RegionCallbacks } from "./RegionModal.tsx";
-import { IconButton, useDisclosure } from "@chakra-ui/react";
+import {
+  Box,
+  IconButton,
+  Tab,
+  TabList,
+  TabPanel,
+  TabPanels,
+  Tabs,
+  useDisclosure,
+} from "@chakra-ui/react";
 import { HamburgerIcon } from "@chakra-ui/icons";
 import GameDrawer, { FileKind } from "./GameDrawer.tsx";
 import RegionTab from "./RegionTab.tsx";
+import { safeEntries } from "./logic/utils.ts";
 
 function App() {
   const stateC: StateT = useContext(StateContext);
@@ -34,7 +44,8 @@ function App() {
     onClose: onCloseModal,
   } = useDisclosure();
 
-  const [cardId, setCardId] = useState<CardId>();
+  const [deckId, setDeckId] = useState<string>("" /* FIXME */);
+  const [cardId, setCardId] = useState<CardId | undefined>();
   const [regionId, setRegionId] = useState<RegionId>("" /* FIXME */);
 
   const cardCallbacks: CardCallbacks = {
@@ -126,6 +137,8 @@ function App() {
     },
   };
 
+  const decks = safeEntries(state);
+
   return (
     <>
       <IconButton
@@ -144,18 +157,53 @@ function App() {
         onClose={onCloseDrawer}
         actionCallbacks={drawerCallbacks}
       />
-      <RegionTab
-        state={state}
-        onClick={(regionId: RegionId, cardId: CardId | undefined): void => {
-          setCardId(cardId);
-          setRegionId(regionId);
-          onOpenModal();
-        }}
-      />
+      {decks.length > 0 && (
+        <Tabs isFitted variant="enclosed-colored">
+          <Box
+            overflow="auto"
+            pb="40px"
+            height="calc(100vh - 20px)"
+            width="100vw"
+          >
+            <TabPanels>
+              {decks.map(([, deck]) => (
+                <TabPanel>
+                  <RegionTab
+                    state={deck.deck}
+                    onClick={(
+                      regionId: RegionId,
+                      cardId: CardId | undefined
+                    ): void => {
+                      setCardId(cardId);
+                      setRegionId(regionId);
+                      onOpenModal();
+                    }}
+                  />
+                </TabPanel>
+              ))}
+            </TabPanels>
+          </Box>
+          <TabList
+            mb="1em"
+            position="fixed"
+            width="100vw"
+            bottom="-5"
+            left="0"
+            right="0"
+            bg="white"
+            zIndex="sticky"
+          >
+            {decks.map(([, deck]) => (
+              <Tab isDisabled={!deck.enabled}>{deck.deck.label}</Tab>
+            ))}
+          </TabList>
+        </Tabs>
+      )}
+
       {regionId && (
         <RegionModal
           key={`${regionId}-modal`}
-          state={state}
+          state={state[deckId].deck}
           regionId={regionId}
           cardId={cardId}
           cardCallbacks={cardCallbacks}

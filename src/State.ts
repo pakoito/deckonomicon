@@ -1,9 +1,10 @@
 import { createContext } from "react";
-import { Deck } from "./logic/api";
+import { Deck, GameState } from "./logic/api";
 
-export type StateT = Deck;
+export type StateT = GameState;
 
-export const State: StateT = {
+export const deck: Deck = {
+  label: "Test Deck",
   regions: {
     deck: {
       region: {
@@ -132,6 +133,10 @@ export const State: StateT = {
       angle: "up",
     },
   },
+};
+
+const State: StateT = {
+  deck1: { deck, enabled: true },
 };
 
 export const StateContext = createContext(State);

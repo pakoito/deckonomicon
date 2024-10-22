@@ -2,11 +2,10 @@ import { Flex, Box } from "@chakra-ui/react";
 import { safeEntries } from "./logic/utils";
 import RegionBoard from "./RegionBoard";
 import RegionStack from "./RegionStack";
-import { StateT } from "./State";
-import { CardId, RegionId } from "./logic/api";
+import { Deck, CardId, RegionId } from "./logic/api";
 
 export type Props = {
-  state: StateT;
+  state: Deck;
   onClick: (regionId: RegionId, cardId: CardId | undefined) => void;
 };
 

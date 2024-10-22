@@ -1,10 +1,9 @@
 import { CSSProperties } from "react";
-import { RegionId } from "./logic/api";
-import { StateT } from "./State";
+import { Deck, RegionId } from "./logic/api";
 import { Card } from "./Card";
 
 export type Props = {
-  state: StateT;
+  state: Deck;
   regionId: RegionId;
   onClick: (id: RegionId) => void;
 };
