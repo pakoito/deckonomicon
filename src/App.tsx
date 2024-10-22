@@ -8,46 +8,92 @@ import {
   CardId,
   flipCard,
   moveById,
+  RegionId,
   shuffleRegion,
   turnCard,
 } from "./logic/api.ts";
 import RegionModal, { CardCallbacks, RegionCallbacks } from "./RegionModal.tsx";
 import RegionBoard from "./RegionBoard.tsx";
-import {
-  Accordion,
-  AccordionButton,
-  AccordionIcon,
-  AccordionItem,
-  AccordionPanel,
-  Box,
-  Button,
-  Drawer,
-  DrawerBody,
-  DrawerCloseButton,
-  DrawerContent,
-  DrawerFooter,
-  DrawerHeader,
-  DrawerOverlay,
-  Flex,
-  HStack,
-  IconButton,
-  Slider,
-  SliderFilledTrack,
-  SliderMark,
-  SliderThumb,
-  SliderTrack,
-  useDisclosure,
-} from "@chakra-ui/react";
+import { Box, Flex, IconButton, useDisclosure } from "@chakra-ui/react";
 import { HamburgerIcon } from "@chakra-ui/icons";
+import GameDrawer, { FileKind } from "./GameDrawer.tsx";
 
 function App() {
   const stateC: StateT = useContext(StateContext);
   const [state, setState] = useState(stateC);
 
-  const { isOpen, onOpen, onClose } = useDisclosure();
   const btnRef = useRef<HTMLButtonElement>(null);
 
-  const [sliderValue, setSliderValue] = useState(1);
+  const {
+    isOpen: isOpenDrawer,
+    onOpen: onOpenDrawer,
+    onClose: onCloseDrawer,
+  } = useDisclosure();
+
+  const {
+    isOpen: isOpenModal,
+    onOpen: onOpenModal,
+    onClose: onCloseModal,
+  } = useDisclosure();
+
+  const [cardId, setCardId] = useState<CardId>();
+  const [regionId, setRegionId] = useState<RegionId>("" /* FIXME */);
+
+  const cardCallbacks: CardCallbacks = {
+    draw: [
+      "Draw",
+      (cardId) =>
+        setState((prevState) =>
+          moveById(prevState, regionId, "hand", new Set([cardId]))
+        ),
+    ],
+    play: [
+      "Play",
+      (cardId) =>
+        setState((prevState) =>
+          moveById(prevState, regionId, "play", new Set([cardId]))
+        ),
+    ],
+    discard: [
+      "Discard",
+      (cardId) =>
+        setState((prevState) =>
+          moveById(prevState, regionId, "discard", new Set([cardId]))
+        ),
+    ],
+    destroy: [
+      "Exile",
+      (cardId) =>
+        setState((prevState) =>
+          moveById(prevState, regionId, "destroy", new Set([cardId]))
+        ),
+    ],
+    return: [
+      "Return to Deck",
+      (cardId) =>
+        setState((prevState) =>
+          moveById(prevState, regionId, "deck", new Set([cardId]))
+        ),
+    ],
+    flip: [
+      "Flip",
+      (cardId) =>
+        setState((prevState) => flipCard(prevState, cardId, "toggle")),
+    ],
+    turn: [
+      "Turn",
+      (cardId) =>
+        setState((prevState) => turnCard(prevState, cardId, "clockwise")),
+    ],
+  };
+
+  const regionCallbacks: RegionCallbacks = {
+    shuffle: [
+      "Shuffle",
+      (regionId) => setState((prevState) => shuffleRegion(prevState, regionId)),
+    ],
+    search: ["Search", () => {}],
+  };
 
   // const [imageUrl, setImageUrl] = useState<string | null>(null);
 
@@ -68,10 +114,18 @@ function App() {
   //   ],
   // });
 
-  const sliderLabelStyles = {
-    mt: "2",
-    ml: "0",
-    fontSize: "sm",
+  const drawerCallbacks = {
+    onLoadFromFile: (kind: FileKind): void => {
+      console.log(kind);
+      onCloseDrawer();
+    },
+    onLoadFromClipboard: (kind: FileKind): void => {
+      console.log(kind);
+      onCloseDrawer();
+    },
+    onResetGame: (): void => {
+      onCloseDrawer();
+    },
   };
 
   return (
@@ -80,7 +134,7 @@ function App() {
         icon={<HamburgerIcon />}
         aria-label="Open menu"
         ref={btnRef}
-        onClick={onOpen}
+        onClick={onOpenDrawer}
         position="fixed"
         top="4"
         right="4"
@@ -89,66 +143,6 @@ function App() {
       <Flex gap="20px" direction={"column"}>
         {safeEntries(state.regions).map(([regionId]) => {
           const region = state.regions[regionId]!;
-          const cardCallbacks: CardCallbacks = {
-            draw: [
-              "Draw",
-              (cardId) =>
-                setState((prevState) =>
-                  moveById(prevState, regionId, "hand", new Set([cardId]))
-                ),
-            ],
-            play: [
-              "Play",
-              (cardId) =>
-                setState((prevState) =>
-                  moveById(prevState, regionId, "play", new Set([cardId]))
-                ),
-            ],
-            discard: [
-              "Discard",
-              (cardId) =>
-                setState((prevState) =>
-                  moveById(prevState, regionId, "discard", new Set([cardId]))
-                ),
-            ],
-            destroy: [
-              "Exile",
-              (cardId) =>
-                setState((prevState) =>
-                  moveById(prevState, regionId, "destroy", new Set([cardId]))
-                ),
-            ],
-            return: [
-              "Return to Deck",
-              (cardId) =>
-                setState((prevState) =>
-                  moveById(prevState, regionId, "deck", new Set([cardId]))
-                ),
-            ],
-            flip: [
-              "Flip",
-              (cardId) =>
-                setState((prevState) => flipCard(prevState, cardId, "toggle")),
-            ],
-            turn: [
-              "Turn",
-              (cardId) =>
-                setState((prevState) =>
-                  turnCard(prevState, cardId, "clockwise")
-                ),
-            ],
-          };
-
-          const regionCallbacks: RegionCallbacks = {
-            shuffle: [
-              "Shuffle",
-              (regionId) =>
-                setState((prevState) => shuffleRegion(prevState, regionId)),
-            ],
-            search: ["Search", () => {}],
-          };
-
-          let onOpen: (cardId: CardId | undefined) => void = () => {};
           return (
             <Box key={`${regionId}-stack`}>
               {region.region.config.rtype === "stack" && (
@@ -156,7 +150,11 @@ function App() {
                   key={`${regionId}-stack`}
                   state={state}
                   regionId={regionId}
-                  onClick={() => onOpen(region.deck[0])}
+                  onClick={() => {
+                    setCardId(region.deck[0]);
+                    setRegionId(regionId);
+                    onOpenModal();
+                  }}
                 />
               )}
               {region.region.config.rtype === "board" && (
@@ -164,134 +162,40 @@ function App() {
                   key={`${regionId}-board`}
                   state={state}
                   regionId={regionId}
-                  onClickRegion={() => onOpen(region.deck[0])}
-                  onClickCard={(_, cardId) => onOpen(cardId)}
+                  onClickRegion={() => {
+                    setCardId(region.deck[0]);
+                    setRegionId(regionId);
+                    onOpenModal();
+                  }}
+                  onClickCard={(_, cardId) => {
+                    setCardId(cardId);
+                    setRegionId(regionId);
+                    onOpenModal();
+                  }}
                 />
               )}
-              <RegionModal
-                key={`${regionId}-modal`}
-                state={state}
-                regionId={regionId}
-                cardCallbacks={cardCallbacks}
-                regionCallbacks={regionCallbacks}
-                getOnOpen={(f) => {
-                  onOpen = f;
-                }}
-              />
             </Box>
           );
         })}
       </Flex>
-      <Drawer
-        isOpen={isOpen}
-        placement="right"
-        onClose={onClose}
-        finalFocusRef={btnRef}
-        size={"lg"}
-      >
-        <DrawerOverlay />
-        <DrawerContent>
-          <DrawerCloseButton />
-          <DrawerHeader>Deckonomicon</DrawerHeader>
-
-          <DrawerBody>
-            <Accordion defaultIndex={[]} allowMultiple allowToggle>
-              <AccordionItem>
-                <h2>
-                  <AccordionButton>
-                    <Box as="span" flex="1" textAlign="left">
-                      Load Deckonomicon
-                    </Box>
-                    <AccordionIcon />
-                  </AccordionButton>
-                </h2>
-                <AccordionPanel pb={4}>
-                  <Flex direction={"column"} gap={"4px"}>
-                    <Button onClick={() => {}}>Load from File</Button>
-                    <Button onClick={() => {}}>Load from Clipboard URL</Button>
-                  </Flex>
-                </AccordionPanel>
-              </AccordionItem>
-
-              <AccordionItem>
-                <h2>
-                  <AccordionButton>
-                    <Box as="span" flex="1" textAlign="left">
-                      Load TTS
-                    </Box>
-                    <AccordionIcon />
-                  </AccordionButton>
-                </h2>
-                <AccordionPanel pb={4}>
-                  <Flex direction={"column"} gap={"4px"}>
-                    <Button onClick={() => {}}>Load from File</Button>
-                    <Button onClick={() => {}}>Load from Clipboard URL</Button>
-                  </Flex>
-                </AccordionPanel>
-              </AccordionItem>
-              <AccordionItem>
-                <h2>
-                  <AccordionButton>
-                    <Box as="span" flex="1" textAlign="left">
-                      Scaling
-                    </Box>
-                    <AccordionIcon />
-                  </AccordionButton>
-                </h2>
-                <AccordionPanel pb={4} margin={"10px"}>
-                  <Slider
-                    defaultValue={1}
-                    min={1}
-                    max={4}
-                    step={1}
-                    onChange={(val) => setSliderValue(val)}
-                  >
-                    <SliderMark value={1} {...sliderLabelStyles}>
-                      x1
-                    </SliderMark>
-                    <SliderMark value={2} {...sliderLabelStyles}>
-                      x2
-                    </SliderMark>
-                    <SliderMark value={3} {...sliderLabelStyles}>
-                      x3
-                    </SliderMark>
-                    <SliderMark value={4} {...sliderLabelStyles}>
-                      x4
-                    </SliderMark>
-                    <SliderMark
-                      value={sliderValue}
-                      textAlign="center"
-                      bg="#3498db"
-                      color="white"
-                      mt="3"
-                      ml="-1"
-                      w="6"
-                      borderRadius="3px"
-                    >
-                      x{sliderValue}
-                    </SliderMark>
-                    <SliderTrack bg="red.100">
-                      <SliderFilledTrack bg="#3498db" />
-                    </SliderTrack>
-                    <SliderThumb boxSize={5} />
-                  </Slider>
-                </AccordionPanel>
-              </AccordionItem>
-            </Accordion>
-          </DrawerBody>
-
-          <DrawerFooter>
-            <HStack>
-              <Button variant="outline" mr={3} onClick={onClose}>
-                Reset Game
-              </Button>
-              <Button variant="outline" mr={3} onClick={onClose}>
-                Return
-              </Button>
-            </HStack>
-          </DrawerFooter>
-        </DrawerContent>
-      </Drawer>
+      {regionId && (
+        <RegionModal
+          key={`${regionId}-modal`}
+          state={state}
+          regionId={regionId}
+          cardId={cardId}
+          cardCallbacks={cardCallbacks}
+          regionCallbacks={regionCallbacks}
+          isOpen={isOpenModal}
+          onClose={onCloseModal}
+        />
+      )}
+      <GameDrawer
+        btnRef={btnRef}
+        isOpen={isOpenDrawer}
+        onClose={onCloseDrawer}
+        actionCallbacks={drawerCallbacks}
+      />
       {/* <div className="card">
         <input type="url" onChange={(e) => setImageUrl(e.target.value)} />
         {imageUrl && (

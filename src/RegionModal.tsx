@@ -9,14 +9,12 @@ import {
   HStack,
   Button,
   Divider,
-  useDisclosure,
   Text,
 } from "@chakra-ui/react";
 import { Card } from "./Card";
 import { safeEntries } from "./logic/utils";
 import { CardId, RegionId } from "./logic/api";
 import { StateT } from "./State";
-import { useState } from "react";
 
 export type CardCallbacks = Record<string, [string, (id: CardId) => void]>;
 
@@ -25,24 +23,19 @@ export type RegionCallbacks = Record<string, [string, (id: RegionId) => void]>;
 export type Props = {
   state: StateT;
   regionId: RegionId;
+  cardId: CardId | undefined;
   cardCallbacks: CardCallbacks;
   regionCallbacks: RegionCallbacks;
-  getOnOpen: (onOpen: (cardId: CardId | undefined) => void) => void;
+  isOpen: boolean;
+  onClose: () => void;
 };
 
 const RegionModal = (props: Props) => {
-  const [cardId, setCardId] = useState<CardId>();
+  const { isOpen, onClose, cardId } = props;
 
   const region = props.state.regions[props.regionId]!;
 
   const card = cardId ? props.state.cards[cardId] ?? null : null;
-
-  const { isOpen, onOpen, onClose } = useDisclosure();
-
-  props.getOnOpen((cardId) => {
-    onOpen();
-    setCardId(cardId);
-  });
 
   return (
     <Modal
