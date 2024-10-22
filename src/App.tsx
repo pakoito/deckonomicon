@@ -1,9 +1,7 @@
 import { useContext, useRef, useState } from "react";
 import PWABadge from "./PWABadge.tsx";
 import "./App.css";
-import RegionStack from "./RegionStack.tsx";
 import { StateContext, StateT } from "./State.ts";
-import { safeEntries } from "./logic/utils.ts";
 import {
   CardId,
   flipCard,
@@ -13,10 +11,10 @@ import {
   turnCard,
 } from "./logic/api.ts";
 import RegionModal, { CardCallbacks, RegionCallbacks } from "./RegionModal.tsx";
-import RegionBoard from "./RegionBoard.tsx";
-import { Box, Flex, IconButton, useDisclosure } from "@chakra-ui/react";
+import { IconButton, useDisclosure } from "@chakra-ui/react";
 import { HamburgerIcon } from "@chakra-ui/icons";
 import GameDrawer, { FileKind } from "./GameDrawer.tsx";
+import RegionTab from "./RegionTab.tsx";
 
 function App() {
   const stateC: StateT = useContext(StateContext);
@@ -140,44 +138,20 @@ function App() {
         right="4"
         zIndex="overlay"
       />
-      <Flex gap="20px" direction={"column"}>
-        {safeEntries(state.regions).map(([regionId]) => {
-          const region = state.regions[regionId]!;
-          return (
-            <Box key={`${regionId}-stack`}>
-              {region.region.config.rtype === "stack" && (
-                <RegionStack
-                  key={`${regionId}-stack`}
-                  state={state}
-                  regionId={regionId}
-                  onClick={() => {
-                    setCardId(region.deck[0]);
-                    setRegionId(regionId);
-                    onOpenModal();
-                  }}
-                />
-              )}
-              {region.region.config.rtype === "board" && (
-                <RegionBoard
-                  key={`${regionId}-board`}
-                  state={state}
-                  regionId={regionId}
-                  onClickRegion={() => {
-                    setCardId(region.deck[0]);
-                    setRegionId(regionId);
-                    onOpenModal();
-                  }}
-                  onClickCard={(_, cardId) => {
-                    setCardId(cardId);
-                    setRegionId(regionId);
-                    onOpenModal();
-                  }}
-                />
-              )}
-            </Box>
-          );
-        })}
-      </Flex>
+      <GameDrawer
+        btnRef={btnRef}
+        isOpen={isOpenDrawer}
+        onClose={onCloseDrawer}
+        actionCallbacks={drawerCallbacks}
+      />
+      <RegionTab
+        state={state}
+        onClick={(regionId: RegionId, cardId: CardId | undefined): void => {
+          setCardId(cardId);
+          setRegionId(regionId);
+          onOpenModal();
+        }}
+      />
       {regionId && (
         <RegionModal
           key={`${regionId}-modal`}
@@ -190,12 +164,6 @@ function App() {
           onClose={onCloseModal}
         />
       )}
-      <GameDrawer
-        btnRef={btnRef}
-        isOpen={isOpenDrawer}
-        onClose={onCloseDrawer}
-        actionCallbacks={drawerCallbacks}
-      />
       {/* <div className="card">
         <input type="url" onChange={(e) => setImageUrl(e.target.value)} />
         {imageUrl && (
