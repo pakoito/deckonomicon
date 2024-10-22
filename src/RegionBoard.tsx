@@ -1,7 +1,7 @@
 import { CSSProperties } from "react";
 import { Deck, CardId, RegionId } from "./logic/api";
 import { Card } from "./Card";
-import { Box, HStack } from "@chakra-ui/react";
+import { Box, Flex, HStack } from "@chakra-ui/react";
 
 export type Props = {
   state: Deck;
@@ -38,7 +38,7 @@ const RegionBoard = (props: Props) => {
   };
 
   return (
-    <div
+    <Flex
       style={{
         ...boxContainerStyle,
         position: "relative",
@@ -66,7 +66,7 @@ const RegionBoard = (props: Props) => {
 
       {region.deck.length > 0 && (
         <Box
-          width={"400px"}
+          width={"100%"}
           height={"350px"}
           flexDirection={"row"}
           overflowX="scroll"
@@ -92,7 +92,7 @@ const RegionBoard = (props: Props) => {
           </HStack>
         </Box>
       )}
-    </div>
+    </Flex>
   );
 };
 

@@ -29,6 +29,7 @@ import { safeEntries } from "./logic/utils.ts";
 function App() {
   const stateC: StateT = useContext(StateContext);
   const [state, setState] = useState(stateC);
+  const decks = safeEntries(state);
 
   const btnRef = useRef<HTMLButtonElement>(null);
 
@@ -44,7 +45,7 @@ function App() {
     onClose: onCloseModal,
   } = useDisclosure();
 
-  const [deckId, setDeckId] = useState<string>("" /* FIXME */);
+  const [deckId, setDeckId] = useState<string>(decks[0][0]);
   const [cardId, setCardId] = useState<CardId | undefined>();
   const [regionId, setRegionId] = useState<RegionId>("" /* FIXME */);
 
@@ -52,54 +53,118 @@ function App() {
     draw: [
       "Draw",
       (cardId) =>
-        setState((prevState) =>
-          moveById(prevState, regionId, "hand", new Set([cardId]))
-        ),
+        setState((prevState) => ({
+          ...prevState,
+          [deckId]: {
+            ...prevState[deckId],
+            deck: moveById(
+              prevState[deckId].deck,
+              regionId,
+              "hand",
+              new Set([cardId])
+            ),
+          },
+        })),
     ],
     play: [
       "Play",
       (cardId) =>
-        setState((prevState) =>
-          moveById(prevState, regionId, "play", new Set([cardId]))
-        ),
+        setState((prevState) => ({
+          ...prevState,
+          [deckId]: {
+            ...prevState[deckId],
+            deck: moveById(
+              prevState[deckId].deck,
+              regionId,
+              "play",
+              new Set([cardId])
+            ),
+          },
+        })),
     ],
     discard: [
       "Discard",
       (cardId) =>
-        setState((prevState) =>
-          moveById(prevState, regionId, "discard", new Set([cardId]))
-        ),
+        setState((prevState) => ({
+          ...prevState,
+          [deckId]: {
+            ...prevState[deckId],
+            deck: moveById(
+              prevState[deckId].deck,
+              regionId,
+              "discard",
+              new Set([cardId])
+            ),
+          },
+        })),
     ],
     destroy: [
       "Exile",
       (cardId) =>
-        setState((prevState) =>
-          moveById(prevState, regionId, "destroy", new Set([cardId]))
-        ),
+        setState((prevState) => ({
+          ...prevState,
+          [deckId]: {
+            ...prevState[deckId],
+            deck: moveById(
+              prevState[deckId].deck,
+              regionId,
+              "destroy",
+              new Set([cardId])
+            ),
+          },
+        })),
     ],
     return: [
       "Return to Deck",
       (cardId) =>
-        setState((prevState) =>
-          moveById(prevState, regionId, "deck", new Set([cardId]))
-        ),
+        setState((prevState) => ({
+          ...prevState,
+          [deckId]: {
+            ...prevState[deckId],
+            deck: moveById(
+              prevState[deckId].deck,
+              regionId,
+              "deck",
+              new Set([cardId])
+            ),
+          },
+        })),
     ],
     flip: [
       "Flip",
       (cardId) =>
-        setState((prevState) => flipCard(prevState, cardId, "toggle")),
+        setState((prevState) => ({
+          ...prevState,
+          [deckId]: {
+            ...prevState[deckId],
+            deck: flipCard(prevState[deckId].deck, cardId, "toggle"),
+          },
+        })),
     ],
     turn: [
       "Turn",
       (cardId) =>
-        setState((prevState) => turnCard(prevState, cardId, "clockwise")),
+        setState((prevState) => ({
+          ...prevState,
+          [deckId]: {
+            ...prevState[deckId],
+            deck: turnCard(prevState[deckId].deck, cardId, "clockwise"),
+          },
+        })),
     ],
   };
 
   const regionCallbacks: RegionCallbacks = {
     shuffle: [
       "Shuffle",
-      (regionId) => setState((prevState) => shuffleRegion(prevState, regionId)),
+      (regionId) =>
+        setState((prevState) => ({
+          ...prevState,
+          [deckId]: {
+            ...prevState[deckId],
+            deck: shuffleRegion(prevState[deckId].deck, regionId),
+          },
+        })),
     ],
     search: ["Search", () => {}],
   };
@@ -137,8 +202,6 @@ function App() {
     },
   };
 
-  const decks = safeEntries(state);
-
   return (
     <>
       <IconButton
@@ -158,7 +221,12 @@ function App() {
         actionCallbacks={drawerCallbacks}
       />
       {decks.length > 0 && (
-        <Tabs isFitted variant="enclosed-colored">
+        <Tabs
+          defaultIndex={0}
+          onChange={(index) => setDeckId(decks[index][0])}
+          isFitted
+          variant="enclosed-colored"
+        >
           <Box
             overflow="auto"
             pb="40px"
@@ -166,8 +234,8 @@ function App() {
             width="100vw"
           >
             <TabPanels>
-              {decks.map(([, deck]) => (
-                <TabPanel>
+              {decks.map(([deckId, deck]) => (
+                <TabPanel key={deckId}>
                   <RegionTab
                     state={deck.deck}
                     onClick={(
@@ -193,8 +261,10 @@ function App() {
             bg="white"
             zIndex="sticky"
           >
-            {decks.map(([, deck]) => (
-              <Tab isDisabled={!deck.enabled}>{deck.deck.label}</Tab>
+            {decks.map(([deckId, deck]) => (
+              <Tab key={deckId} isDisabled={!deck.enabled}>
+                {deck.deck.label}
+              </Tab>
             ))}
           </TabList>
         </Tabs>

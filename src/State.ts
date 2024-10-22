@@ -137,6 +137,7 @@ export const deck: Deck = {
 
 const State: StateT = {
   deck1: { deck, enabled: true },
+  deck2: { deck: { ...deck, label: "Some other deck" }, enabled: true },
 };
 
 export const StateContext = createContext(State);
