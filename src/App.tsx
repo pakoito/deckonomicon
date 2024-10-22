@@ -21,7 +21,6 @@ import {
   AccordionPanel,
   Box,
   Button,
-  Divider,
   Drawer,
   DrawerBody,
   DrawerCloseButton,
@@ -37,6 +36,7 @@ import {
   SliderThumb,
   SliderTrack,
   useDisclosure,
+  VStack,
 } from "@chakra-ui/react";
 import { HamburgerIcon } from "@chakra-ui/icons";
 
@@ -69,7 +69,7 @@ function App() {
   // });
 
   const sliderLabelStyles = {
-    mt: "4",
+    mt: "2",
     ml: "0",
     fontSize: "sm",
   };
@@ -200,16 +200,16 @@ function App() {
                 <h2>
                   <AccordionButton>
                     <Box as="span" flex="1" textAlign="left">
-                      Section 1 title
+                      Load Deckonomicon
                     </Box>
                     <AccordionIcon />
                   </AccordionButton>
                 </h2>
                 <AccordionPanel pb={4}>
-                  Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed
-                  do eiusmod tempor incididunt ut labore et dolore magna aliqua.
-                  Ut enim ad minim veniam, quis nostrud exercitation ullamco
-                  laboris nisi ut aliquip ex ea commodo consequat.
+                  <Flex direction={"column"} gap={"4px"}>
+                    <Button onClick={() => {}}>Load from File</Button>
+                    <Button onClick={() => {}}>Load from Clipboard</Button>
+                  </Flex>
                 </AccordionPanel>
               </AccordionItem>
 
@@ -217,55 +217,67 @@ function App() {
                 <h2>
                   <AccordionButton>
                     <Box as="span" flex="1" textAlign="left">
-                      Section 2 title
+                      Load TTS
                     </Box>
                     <AccordionIcon />
                   </AccordionButton>
                 </h2>
                 <AccordionPanel pb={4}>
-                  Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed
-                  do eiusmod tempor incididunt ut labore et dolore magna aliqua.
-                  Ut enim ad minim veniam, quis nostrud exercitation ullamco
-                  laboris nisi ut aliquip ex ea commodo consequat.
+                  <Flex direction={"column"} gap={"4px"}>
+                    <Button onClick={() => {}}>Load from File</Button>
+                    <Button onClick={() => {}}>Load from Clipboard</Button>
+                  </Flex>
+                </AccordionPanel>
+              </AccordionItem>
+              <AccordionItem>
+                <h2>
+                  <AccordionButton>
+                    <Box as="span" flex="1" textAlign="left">
+                      Scaling
+                    </Box>
+                    <AccordionIcon />
+                  </AccordionButton>
+                </h2>
+                <AccordionPanel pb={4} margin={"10px"}>
+                  <Slider
+                    defaultValue={1}
+                    min={1}
+                    max={4}
+                    step={1}
+                    onChange={(val) => setSliderValue(val)}
+                  >
+                    <SliderMark value={1} {...sliderLabelStyles}>
+                      x1
+                    </SliderMark>
+                    <SliderMark value={2} {...sliderLabelStyles}>
+                      x2
+                    </SliderMark>
+                    <SliderMark value={3} {...sliderLabelStyles}>
+                      x3
+                    </SliderMark>
+                    <SliderMark value={4} {...sliderLabelStyles}>
+                      x4
+                    </SliderMark>
+                    <SliderMark
+                      value={sliderValue}
+                      textAlign="center"
+                      bg="#3498db"
+                      color="white"
+                      mt="3"
+                      ml="-1"
+                      w="6"
+                      borderRadius="3px"
+                    >
+                      x{sliderValue}
+                    </SliderMark>
+                    <SliderTrack bg="red.100">
+                      <SliderFilledTrack bg="#3498db" />
+                    </SliderTrack>
+                    <SliderThumb boxSize={5} />
+                  </Slider>
                 </AccordionPanel>
               </AccordionItem>
             </Accordion>
-            <Divider />
-            <Slider
-              defaultValue={1}
-              min={1}
-              max={4}
-              step={1}
-              onChange={(val) => setSliderValue(val)}
-            >
-              <SliderMark value={1} {...sliderLabelStyles}>
-                x1
-              </SliderMark>
-              <SliderMark value={2} {...sliderLabelStyles}>
-                x2
-              </SliderMark>
-              <SliderMark value={3} {...sliderLabelStyles}>
-                x3
-              </SliderMark>
-              <SliderMark value={4} {...sliderLabelStyles}>
-                x4
-              </SliderMark>
-              <SliderMark
-                value={sliderValue}
-                textAlign="center"
-                bg="#3498db"
-                color="white"
-                mt="4"
-                ml="-3.5"
-                w="12"
-              >
-                x{sliderValue}
-              </SliderMark>
-              <SliderTrack bg="red.100">
-                <SliderFilledTrack bg="#3498db" />
-              </SliderTrack>
-              <SliderThumb boxSize={5} />
-            </Slider>
           </DrawerBody>
 
           <DrawerFooter>
