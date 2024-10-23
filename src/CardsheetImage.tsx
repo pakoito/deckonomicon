@@ -24,7 +24,7 @@ const CardsheetImage = (props: Props) => {
   const cardWidth = imageWidth / rows;
   const cardHeight = imageHeight / columns;
   const ratio = cardWidth / cardHeight;
-  const width = ratio ? height * ratio : height * defaultRatio;
+  const width = height * ratio;
 
   const percentWidth = 100 / (rows - 1);
   const percentHeight = 100 / (columns - 1);
@@ -52,7 +52,7 @@ const CardsheetImage = (props: Props) => {
           height={`${height}px`}
           width={`${width}px`}
           fallbackSrc={`https://placehold.co/${Math.round(
-            width
+            height * defaultRatio
           )}x${height}?text=Failed+to+load`}
           onLoad={(img) => {
             setHasLoaded(true);
