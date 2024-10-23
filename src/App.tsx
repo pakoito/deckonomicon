@@ -25,7 +25,6 @@ import { HamburgerIcon } from "@chakra-ui/icons";
 import GameDrawer, { FileKind } from "./GameDrawer.tsx";
 import RegionTab from "./RegionTab.tsx";
 import { safeEntries } from "./logic/utils.ts";
-import TTSImage from "./TTSImage.tsx";
 
 function App() {
   const stateC: StateT = useContext(StateContext);
@@ -223,7 +222,6 @@ function App() {
         onClose={onCloseDrawer}
         actionCallbacks={drawerCallbacks}
       />
-      <TTSImage />
       {decks.length > 0 && (
         <Tabs
           defaultIndex={0}
