@@ -25,6 +25,7 @@ import { HamburgerIcon } from "@chakra-ui/icons";
 import GameDrawer, { FileKind } from "./GameDrawer.tsx";
 import RegionTab from "./RegionTab.tsx";
 import { safeEntries } from "./logic/utils.ts";
+import TTSImage from "./TTSImage.tsx";
 
 function App() {
   const stateC: StateT = useContext(StateContext);
@@ -190,11 +191,13 @@ function App() {
 
   const drawerCallbacks = {
     onLoadFromFile: (kind: FileKind): void => {
-      console.log(kind);
+      const decks = [1];
+      console.log(`${JSON.stringify(decks)} ${kind}`);
       onCloseDrawer();
     },
     onLoadFromClipboard: (kind: FileKind): void => {
-      console.log(kind);
+      const decks = [1];
+      console.log(`${JSON.stringify(decks)} ${kind}`);
       onCloseDrawer();
     },
     onResetGame: (): void => {
@@ -220,6 +223,7 @@ function App() {
         onClose={onCloseDrawer}
         actionCallbacks={drawerCallbacks}
       />
+      <TTSImage />
       {decks.length > 0 && (
         <Tabs
           defaultIndex={0}
