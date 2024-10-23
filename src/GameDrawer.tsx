@@ -63,7 +63,7 @@ const GameDrawer = (props: Props) => {
         <DrawerHeader>Deckonomicon</DrawerHeader>
 
         <DrawerBody>
-          <Accordion defaultIndex={[]} allowMultiple allowToggle>
+          <Accordion defaultIndex={[]} allowMultiple>
             <AccordionItem>
               <h2>
                 <AccordionButton>
