@@ -25,6 +25,7 @@ import { HamburgerIcon } from "@chakra-ui/icons";
 import GameDrawer, { FileKind } from "./GameDrawer.tsx";
 import RegionTab from "./RegionTab.tsx";
 import { safeEntries } from "./logic/utils.ts";
+import CardsheetImage from "./CardsheetImage.tsx";
 
 function App() {
   const stateC: StateT = useContext(StateContext);
@@ -221,6 +222,14 @@ function App() {
         isOpen={isOpenDrawer}
         onClose={onCloseDrawer}
         actionCallbacks={drawerCallbacks}
+      />
+      <CardsheetImage
+        height={150}
+        row={0}
+        column={0}
+        url={"xxxx"}
+        rows={10}
+        columns={10}
       />
       {decks.length > 0 && (
         <Tabs
